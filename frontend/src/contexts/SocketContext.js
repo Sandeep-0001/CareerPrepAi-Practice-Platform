@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { toast } from 'react-hot-toast';
 import { apiMethods } from '../utils/api';
@@ -19,6 +20,7 @@ export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [currentSession, setCurrentSession] = useState(null);
   const { user, token } = useAuth();
+  const location = useLocation();
 
   const lastConnectErrorToastAtRef = useRef(0);
   const currentSessionRef = useRef(null);
@@ -28,54 +30,71 @@ export const SocketProvider = ({ children }) => {
 
   const authenticated = useMemo(() => !!user && !!token, [user, token]);
 
+  const shouldConnect = useMemo(() => {
+    const path = location?.pathname || '';
+    // Only connect when real-time features are relevant.
+    return path.includes('/interview') || path.includes('/coding') || path.includes('/realtime');
+  }, [location?.pathname]);
+
   useEffect(() => {
     currentSessionRef.current = currentSession;
   }, [currentSession]);
 
   useEffect(() => {
-    if (authenticated && userId) {
-      // Initialize socket connection
-      const socketUrl = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
-      const newSocket = io(socketUrl, {
-        auth: {
-          userId,
-          userName
-        }
-      });
-
-      newSocket.on('connect', () => {
-        setConnected(true);
-        toast.dismiss('socket-connect-error');
-      });
-
-      newSocket.on('disconnect', (reason) => {
-        setConnected(false);
-      });
-
-      newSocket.on('connect_error', (error) => {
-        console.error('🔌 Connection error:', error);
-        setConnected(false);
-
-        const path = window.location.pathname || '';
-        const shouldNotify = !!currentSessionRef.current || path.includes('/interview') || path.includes('/coding') || path.includes('/realtime');
-
-        // Avoid spamming the user on reconnect attempts
-        const now = Date.now();
-        if (shouldNotify && now - lastConnectErrorToastAtRef.current > 30000) {
-          lastConnectErrorToastAtRef.current = now;
-          toast.error('Real-time server unavailable. Some live features may not work.', {
-            id: 'socket-connect-error'
-          });
-        }
-      });
-
-      setSocket(newSocket);
-
-      return () => {
-        newSocket.close();
-      };
+    if (!authenticated || !userId || !shouldConnect) {
+      // If we navigated away from realtime pages, close any existing socket.
+      if (socket) {
+        socket.close();
+        setSocket(null);
+      }
+      setConnected(false);
+      return;
     }
-  }, [authenticated, userId, userName]);
+
+    // Already connected/connecting
+    if (socket) return;
+
+    // Initialize socket connection
+    const socketUrl = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+    const newSocket = io(socketUrl, {
+      auth: {
+        userId,
+        userName
+      }
+    });
+
+    newSocket.on('connect', () => {
+      setConnected(true);
+      toast.dismiss('socket-connect-error');
+    });
+
+    newSocket.on('disconnect', () => {
+      setConnected(false);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('🔌 Connection error:', error);
+      setConnected(false);
+
+      const path = window.location.pathname || '';
+      const shouldNotify = !!currentSessionRef.current || path.includes('/interview') || path.includes('/coding') || path.includes('/realtime');
+
+      // Avoid spamming the user on reconnect attempts
+      const now = Date.now();
+      if (shouldNotify && now - lastConnectErrorToastAtRef.current > 30000) {
+        lastConnectErrorToastAtRef.current = now;
+        toast.error('Real-time server unavailable. Some live features may not work.', {
+          id: 'socket-connect-error'
+        });
+      }
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, [authenticated, userId, userName, shouldConnect, socket]);
 
   // Join interview session
   const joinInterviewSession = (sessionId) => {

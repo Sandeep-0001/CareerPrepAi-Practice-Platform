@@ -259,4 +259,5 @@ export const downloadFile = async (url, filename) => {
 // Health check
 export const healthCheck = () => api.get('/health');
 
+// Default export for direct axios usage (used by AuthContext)
 export default api;

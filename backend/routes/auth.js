@@ -130,8 +130,8 @@ router.post('/login', validateLogin, handleValidationErrors, async (req, res) =>
     }
 
     // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    User.updateOne({ _id: user._id }, { $set: { lastLogin: new Date() } })
+      .catch((e) => console.error('Failed to update lastLogin:', e));
 
     // Generate token
     const token = generateToken(user._id);

@@ -1,10 +1,18 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
 
+const safeJsonParse = (value, fallback = null) => {
+  try {
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 // Initial state
 const initialState = {
-  user: null,
+  user: safeJsonParse(localStorage.getItem('user'), null),
   token: localStorage.getItem('token'),
   loading: true,
   error: null,
@@ -77,6 +85,7 @@ const AuthContext = createContext();
 // Auth provider component
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const didInitRef = useRef(false);
 
   // Set token in localStorage and API headers
   const setToken = useCallback((token) => {
@@ -85,6 +94,7 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       delete api.defaults.headers.common['Authorization'];
     }
   }, []);
@@ -92,23 +102,44 @@ export const AuthProvider = ({ children }) => {
   // Initialize auth state
   useEffect(() => {
     const initializeAuth = async () => {
+      // React 18 StrictMode runs effects twice in development.
+      if (didInitRef.current) return;
+      didInitRef.current = true;
+
       const token = localStorage.getItem('token');
+      const cachedUser = safeJsonParse(localStorage.getItem('user'), null);
       
       if (token) {
         try {
           // Set token in API headers
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          
-          // Verify token and get user data
+
+          // If we have cached user data, unblock UI immediately, then refresh in background.
+          if (cachedUser) {
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: {
+                user: cachedUser,
+                token,
+              },
+            });
+          } else {
+            dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
+          }
+
+          // Verify token and refresh user data (ensures roles/subscription are current)
           const response = await api.get('/auth/me');
-          
-          dispatch({
-            type: AUTH_ACTIONS.LOGIN_SUCCESS,
-            payload: {
-              user: response.data.data.user,
-              token,
-            },
-          });
+          const freshUser = response?.data?.data?.user;
+          if (freshUser) {
+            localStorage.setItem('user', JSON.stringify(freshUser));
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: {
+                user: freshUser,
+                token,
+              },
+            });
+          }
         } catch (error) {
           console.error('Token verification failed:', error);
           // Token is invalid, remove it
@@ -134,6 +165,9 @@ export const AuthProvider = ({ children }) => {
 
       // Set token
       setToken(token);
+
+      // Cache user for fast reloads / route transitions
+      localStorage.setItem('user', JSON.stringify(user));
 
       // Update state
       dispatch({
@@ -162,6 +196,9 @@ export const AuthProvider = ({ children }) => {
 
       // Set token
       setToken(token);
+
+      // Cache user for fast reloads / route transitions
+      localStorage.setItem('user', JSON.stringify(user));
 
       // Update state
       dispatch({
