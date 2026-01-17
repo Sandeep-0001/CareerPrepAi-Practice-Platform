@@ -9,6 +9,7 @@ import AuthLayout from './components/Layout/AuthLayout';
 
 // Page Components
 import HomePage from './pages/HomePage';
+import AuthPage from './pages/auth/AuthPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -113,14 +114,12 @@ function App() {
           }
         />
         
-        {/* Auth Routes */}
+        {/* Auth Routes - Unified Auth Page */}
         <Route
           path="/login"
           element={
             <PublicRoute>
-              <AuthLayout>
-                <LoginPage />
-              </AuthLayout>
+              <AuthPage />
             </PublicRoute>
           }
         />
@@ -129,9 +128,7 @@ function App() {
           path="/register"
           element={
             <PublicRoute>
-              <AuthLayout>
-                <RegisterPage />
-              </AuthLayout>
+              <AuthPage />
             </PublicRoute>
           }
         />

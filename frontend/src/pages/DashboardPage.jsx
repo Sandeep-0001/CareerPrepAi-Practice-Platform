@@ -247,13 +247,13 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
       {/* Enhanced Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-2xl"
+        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-8 md:p-10 text-white shadow-2xl mb-8"
       >
         <div className="flex items-center justify-between">
           <div className="max-w-2xl">
@@ -261,7 +261,7 @@ const DashboardPage = () => {
               Welcome back, {user?.name?.split(' ')[0]}! 👋
             </h1>
             <p className="text-blue-100 text-lg mb-6">
-              Ready to ace your next interview? Let's continue your preparation journey.
+              Let's keep building your skills and confidence together. You're getting better every day!
             </p>
             
             {/* Quick Start Buttons */}
@@ -304,13 +304,13 @@ const DashboardPage = () => {
       </motion.div>
 
       {loading && (
-        <div className="card p-6">
+        <div className="card p-8 mb-8 shadow-xl">
           <LoadingSpinner text="Loading your dashboard..." />
         </div>
       )}
 
       {!loading && error && (
-        <div className="card p-6">
+        <div className="card p-8 mb-8 shadow-xl border-2 border-red-200">
           <p className="text-error-600 font-medium">{error}</p>
           <p className="text-secondary-600 text-sm mt-1">Please refresh and try again.</p>
         </div>
@@ -322,13 +322,13 @@ const DashboardPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="px-6"
+        className="mb-8"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Brain className="w-6 h-6 text-blue-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center shadow-md">
+                <Brain className="w-7 h-7 text-blue-600" />
               </div>
               <span className="text-xs text-slate-600 font-medium bg-blue-50 px-2 py-1 rounded-full">
                 Last 7 days: {computed.last7Interviews}
@@ -338,10 +338,10 @@ const DashboardPage = () => {
             <div className="text-sm text-slate-600">Total Interviews</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <Target className="w-6 h-6 text-green-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center shadow-md">
+                <Target className="w-7 h-7 text-green-600" />
               </div>
               <span className="text-xs text-slate-600 font-medium bg-green-50 px-2 py-1 rounded-full">
                 Accuracy: {computed.accuracyPercentage}%
@@ -351,10 +351,10 @@ const DashboardPage = () => {
             <div className="text-sm text-slate-600">Questions Attempted</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <Star className="w-6 h-6 text-yellow-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center shadow-md">
+                <Star className="w-7 h-7 text-yellow-600" />
               </div>
               <span className="text-xs text-slate-600 font-medium bg-yellow-50 px-2 py-1 rounded-full">
                 Last 7 days: {computed.last7Questions}
@@ -364,10 +364,10 @@ const DashboardPage = () => {
             <div className="text-sm text-slate-600">Average Score</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-purple-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center shadow-md">
+                <Clock className="w-7 h-7 text-purple-600" />
               </div>
               <span className="text-xs text-slate-600 font-medium bg-purple-50 px-2 py-1 rounded-full">
                 Streak: {computed.currentStreak} days
@@ -385,7 +385,7 @@ const DashboardPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="px-6"
+        className="mb-8"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quickActions.map((action, index) => {
@@ -396,11 +396,11 @@ const DashboardPage = () => {
                   key={action.title}
                   onClick={action.action}
                   disabled={quickStarting}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-200 group text-left disabled:opacity-50"
+                  className="bg-white rounded-2xl p-8 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-200 group text-left disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div className={`w-14 h-14 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
+                  <div className={`w-16 h-16 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200 shadow-lg`}>
                     <action.icon className={`w-7 h-7 ${action.textColor}`} />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-2">
@@ -421,9 +421,9 @@ const DashboardPage = () => {
                 <Link
                   key={action.title}
                   to={action.href}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-200 group"
+                  className="bg-white rounded-2xl p-8 shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-200 group"
                 >
-                  <div className={`w-14 h-14 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
+                  <div className={`w-16 h-16 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200 shadow-lg`}>
                     <action.icon className={`w-7 h-7 ${action.textColor}`} />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-2">
@@ -443,13 +443,13 @@ const DashboardPage = () => {
         </div>
       </motion.div>
 
-      <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Enhanced Recent Interviews */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
+          className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200 hover:shadow-2xl transition-shadow duration-300"
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-slate-900">Recent Interviews</h2>
@@ -515,7 +515,7 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
+          className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200 hover:shadow-2xl transition-shadow duration-300"
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-slate-900">Achievements</h2>
@@ -569,9 +569,9 @@ const DashboardPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="px-6 pb-8"
+        className="pb-8"
       >
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-slate-900">Recent Activity</h2>
             <div className="flex items-center space-x-2 text-sm text-slate-600">

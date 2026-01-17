@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Search } from 'lucide-react';
+import { Menu, Bell } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Header = ({ onMenuClick }) => {
@@ -20,22 +20,7 @@ const Header = ({ onMenuClick }) => {
       {/* Separator */}
       <div className="h-6 w-px bg-secondary-200 lg:hidden" />
 
-      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        {/* Search */}
-        <form className="relative flex flex-1" action="#" method="GET">
-          <label htmlFor="search-field" className="sr-only">
-            Search
-          </label>
-          <Search className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-secondary-400 pl-3" />
-          <input
-            id="search-field"
-            className="block h-full w-full border-0 py-0 pl-10 pr-0 text-secondary-900 placeholder:text-secondary-400 focus:ring-0 sm:text-sm"
-            placeholder="Search interviews, questions..."
-            type="search"
-            name="search"
-          />
-        </form>
-
+      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-end">
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           {/* Notifications button */}
           <button

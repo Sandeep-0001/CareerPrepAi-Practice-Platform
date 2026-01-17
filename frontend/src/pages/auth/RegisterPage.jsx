@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
@@ -33,12 +33,18 @@ const RegisterPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      className="bg-white rounded-2xl shadow-2xl p-8 border border-secondary-100"
     >
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-secondary-900 mb-2">
+        <div className="flex items-center justify-center mb-4">
+          <div className="bg-gradient-to-r from-success-500 to-success-700 p-3 rounded-xl shadow-lg">
+            <User className="w-8 h-8 text-white" />
+          </div>
+        </div>
+        <h2 className="text-3xl font-bold text-center gradient-text mb-2">
           Create your account
         </h2>
-        <p className="text-secondary-600">
+        <p className="text-secondary-600 text-center">
           Join thousands of candidates who have landed their dream jobs with CareerPrep Ai.
         </p>
       </div>
@@ -47,9 +53,9 @@ const RegisterPage = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 p-4 bg-error-50 border border-error-200 rounded-lg"
+          className="mb-6 p-4 bg-error-50 border-2 border-error-200 rounded-xl shadow-lg"
         >
-          <p className="text-sm text-error-700">{error}</p>
+          <p className="text-sm text-error-700 font-medium">{error}</p>
         </motion.div>
       )}
 
@@ -77,7 +83,7 @@ const RegisterPage = () => {
               })}
               type="text"
               className={`
-                input pl-10
+                input pl-10 shadow-sm hover:shadow-md focus:shadow-lg transition-all
                 ${errors.name ? 'input-error' : ''}
               `}
               placeholder="Enter your full name"
@@ -108,7 +114,7 @@ const RegisterPage = () => {
               })}
               type="email"
               className={`
-                input pl-10
+                input pl-10 shadow-sm hover:shadow-md focus:shadow-lg transition-all
                 ${errors.email ? 'input-error' : ''}
               `}
               placeholder="Enter your email"
@@ -143,7 +149,7 @@ const RegisterPage = () => {
               })}
               type={showPassword ? 'text' : 'password'}
               className={`
-                input pl-10 pr-10
+                input pl-10 pr-10 shadow-sm hover:shadow-md focus:shadow-lg transition-all
                 ${errors.password ? 'input-error' : ''}
               `}
               placeholder="Create a password"
@@ -182,7 +188,7 @@ const RegisterPage = () => {
               })}
               type={showConfirmPassword ? 'text' : 'password'}
               className={`
-                input pl-10 pr-10
+                input pl-10 pr-10 shadow-sm hover:shadow-md focus:shadow-lg transition-all
                 ${errors.confirmPassword ? 'input-error' : ''}
               `}
               placeholder="Confirm your password"
@@ -238,7 +244,7 @@ const RegisterPage = () => {
         <button
           type="submit"
           disabled={isSubmitting || loading}
-          className="btn btn-primary w-full flex items-center justify-center space-x-2"
+          className="btn btn-primary w-full flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all"
         >
           {(isSubmitting || loading) ? (
             <LoadingSpinner size="sm" color="white" />
@@ -261,7 +267,7 @@ const RegisterPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            className="btn btn-secondary flex items-center justify-center space-x-2"
+            className="btn btn-secondary flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -286,7 +292,7 @@ const RegisterPage = () => {
 
           <button
             type="button"
-            className="btn btn-secondary flex items-center justify-center space-x-2"
+            className="btn btn-secondary flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -307,6 +313,24 @@ const RegisterPage = () => {
             Sign in
           </Link>
         </p>
+      </div>
+
+      {/* Trust indicators */}
+      <div className="mt-6 pt-6 border-t border-secondary-200">
+        <div className="flex items-center justify-center space-x-6 text-xs text-secondary-500">
+          <div className="flex items-center">
+            <CheckCircle className="w-4 h-4 text-success-500 mr-1" />
+            <span>Free Forever</span>
+          </div>
+          <div className="flex items-center">
+            <CheckCircle className="w-4 h-4 text-success-500 mr-1" />
+            <span>No Credit Card</span>
+          </div>
+          <div className="flex items-center">
+            <CheckCircle className="w-4 h-4 text-success-500 mr-1" />
+            <span>Cancel Anytime</span>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
