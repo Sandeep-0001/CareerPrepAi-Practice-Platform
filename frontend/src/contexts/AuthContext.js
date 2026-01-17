@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '../utils/api';
+import api, { wakeServer, __internal as apiInternal } from '../utils/api';
 
 const safeJsonParse = (value, fallback = null) => {
   try {
@@ -160,7 +160,11 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
       dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
 
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post(
+        '/auth/login',
+        { email, password },
+        { skipNetworkToast: true }
+      );
       const { user, token } = response.data.data;
 
       // Set token
@@ -178,6 +182,51 @@ export const AuthProvider = ({ children }) => {
       toast.success('Login successful!');
       return { success: true };
     } catch (error) {
+      // Render free tier / cold-start friendly handling
+      const isColdStart = apiInternal?.isColdStartLikeError?.(error);
+
+      if (isColdStart) {
+        const toastId = 'waking-server';
+        toast.loading('Server is starting (Render cold start)… retrying in a moment.', { id: toastId });
+
+        const woke = await wakeServer({ maxWaitMs: 25000, attemptTimeoutMs: 8000 });
+        if (woke) {
+          try {
+            const retryResponse = await api.post(
+              '/auth/login',
+              { email, password },
+              { skipNetworkToast: true }
+            );
+            const { user, token } = retryResponse.data.data;
+
+            setToken(token);
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: { user, token },
+            });
+
+            toast.dismiss(toastId);
+            toast.success('Login successful!');
+            return { success: true };
+          } catch (retryError) {
+            toast.dismiss(toastId);
+            const retryMessage =
+              retryError.response?.data?.message ||
+              'Server is still starting. Please try again in 10–20 seconds.';
+            dispatch({ type: AUTH_ACTIONS.SET_ERROR, payload: retryMessage });
+            toast.error(retryMessage);
+            return { success: false, error: retryMessage };
+          }
+        }
+
+        toast.dismiss(toastId);
+        const wakeMessage = 'Server is still starting. Please try again in 10–20 seconds.';
+        dispatch({ type: AUTH_ACTIONS.SET_ERROR, payload: wakeMessage });
+        toast.error(wakeMessage);
+        return { success: false, error: wakeMessage };
+      }
+
       const errorMessage = error.response?.data?.message || 'Login failed';
       dispatch({ type: AUTH_ACTIONS.SET_ERROR, payload: errorMessage });
       toast.error(errorMessage);

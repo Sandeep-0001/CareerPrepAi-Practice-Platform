@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
+import { wakeServer } from '../../utils/api';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, loading, error } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Best-effort: wake Render backend on first visit (no user-visible toast spam).
+    wakeServer({ maxWaitMs: 12000, attemptTimeoutMs: 6000 }).catch(() => {});
+  }, []);
 
   const {
     register,

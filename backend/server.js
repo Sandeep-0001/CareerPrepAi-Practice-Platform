@@ -8,6 +8,14 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+let MongoMemoryServer;
+try {
+  // Optional dev dependency
+  ({ MongoMemoryServer } = require('mongodb-memory-server'));
+} catch {
+  MongoMemoryServer = null;
+}
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -94,6 +102,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/prepiq';
+let mongoMemoryServer = null;
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -182,11 +191,30 @@ server.on('error', (err) => {
 
 const start = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('✅ MongoDB connected successfully');
+    try {
+      await mongoose.connect(MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000,
+      });
+      console.log('✅ MongoDB connected successfully');
+    } catch (err) {
+      const allowInMemory = !isProduction && process.env.USE_IN_MEMORY_MONGO !== 'false';
+
+      if (allowInMemory && MongoMemoryServer) {
+        console.warn('⚠️  MongoDB not reachable. Starting in-memory MongoDB for development...');
+        mongoMemoryServer = await MongoMemoryServer.create();
+        const memoryUri = mongoMemoryServer.getUri();
+        await mongoose.connect(memoryUri, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          serverSelectionTimeoutMS: 5000,
+        });
+        console.log('✅ In-memory MongoDB started successfully');
+      } else {
+        throw err;
+      }
+    }
 
     server.listen(PORT, () => {
       console.log(`🚀 PrepIQ Server running on port ${PORT}`);
@@ -199,5 +227,24 @@ const start = async () => {
     process.exit(1);
   }
 };
+
+const shutdown = async () => {
+  try {
+    await mongoose.connection.close();
+  } catch {
+    // ignore
+  }
+  if (mongoMemoryServer) {
+    try {
+      await mongoMemoryServer.stop();
+    } catch {
+      // ignore
+    }
+  }
+  process.exit(0);
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 start();

@@ -12,6 +12,68 @@ const api = axios.create({
   },
 });
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isColdStartLikeError = (error) => {
+  // Axios timeout
+  if (error?.code === 'ECONNABORTED') return true;
+
+  // Network error (no response received)
+  if (error?.request && !error?.response) return true;
+
+  // Common gateway errors during cold start / spin-up
+  const status = error?.response?.status;
+  if (status === 502 || status === 503 || status === 504) return true;
+
+  return false;
+};
+
+/**
+ * Best-effort wake-up for Render (or other) cold starts.
+ * Polls `/health` with short timeouts + backoff until success or deadline.
+ */
+export const wakeServer = async (options = {}) => {
+  const {
+    maxWaitMs = 25000,
+    initialDelayMs = 0,
+    attemptTimeoutMs = 8000,
+    onAttempt,
+  } = options;
+
+  if (initialDelayMs > 0) await sleep(initialDelayMs);
+
+  const startedAt = Date.now();
+  let attempt = 0;
+
+  // Backoff schedule (ms) keeps UX snappy without hammering
+  const delays = [0, 750, 1250, 2000, 3000, 4000, 5000];
+
+  while (Date.now() - startedAt < maxWaitMs) {
+    attempt += 1;
+    if (typeof onAttempt === 'function') {
+      try {
+        onAttempt({ attempt, elapsedMs: Date.now() - startedAt });
+      } catch {
+        // ignore callback errors
+      }
+    }
+
+    try {
+      // Use a short timeout so we can retry quickly during spin-up
+      await api.get('/health', { timeout: attemptTimeoutMs, skipErrorToast: true, skipNetworkToast: true });
+      return true;
+    } catch (error) {
+      if (!isColdStartLikeError(error)) {
+        return false;
+      }
+      const delay = delays[Math.min(attempt - 1, delays.length - 1)];
+      if (delay > 0) await sleep(delay);
+    }
+  }
+
+  return false;
+};
+
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
@@ -42,6 +104,13 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    const skipErrorToast = !!error?.config?.skipErrorToast;
+    const skipNetworkToast = !!error?.config?.skipNetworkToast;
+
+    if (skipErrorToast) {
+      return Promise.reject(error);
+    }
+
     // Handle different error scenarios
     if (error.response) {
       const { status, data } = error.response;
@@ -94,7 +163,9 @@ api.interceptors.response.use(
       }
     } else if (error.request) {
       // Network error
-      toast.error('Network error. Please check your connection.', { id: 'network-error' });
+      if (!skipNetworkToast) {
+        toast.error('Network error. Please check your connection.', { id: 'network-error' });
+      }
     } else {
       // Other errors
       toast.error('An unexpected error occurred.');
@@ -258,6 +329,10 @@ export const downloadFile = async (url, filename) => {
 
 // Health check
 export const healthCheck = () => api.get('/health');
+
+export const __internal = {
+  isColdStartLikeError,
+};
 
 // Default export for direct axios usage (used by AuthContext)
 export default api;
