@@ -1,17 +1,13 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 
 // Layout Components
 import Layout from './components/Layout/Layout';
-import AuthLayout from './components/Layout/AuthLayout';
 
 // Page Components
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/auth/AuthPage';
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import InterviewPage from './pages/interview/InterviewPage';
 import InterviewSetupPage from './pages/interview/InterviewSetupPage';
