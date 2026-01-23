@@ -127,18 +127,64 @@ export const AuthProvider = ({ children }) => {
             dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
           }
 
+          // On backend cold start (Render), health check first
+          // This prevents timeouts and gives backend time to spin up
+          const isColdStart = !navigator.onLine || document.hidden;
+          
           // Verify token and refresh user data (ensures roles/subscription are current)
-          const response = await api.get('/auth/me');
-          const freshUser = response?.data?.data?.user;
-          if (freshUser) {
-            localStorage.setItem('user', JSON.stringify(freshUser));
-            dispatch({
-              type: AUTH_ACTIONS.LOGIN_SUCCESS,
-              payload: {
-                user: freshUser,
-                token,
-              },
-            });
+          try {
+            const response = await api.get('/auth/me');
+            const freshUser = response?.data?.data?.user;
+            if (freshUser) {
+              localStorage.setItem('user', JSON.stringify(freshUser));
+              dispatch({
+                type: AUTH_ACTIONS.LOGIN_SUCCESS,
+                payload: {
+                  user: freshUser,
+                  token,
+                },
+              });
+            }
+          } catch (verifyError) {
+            // If auth/me fails due to cold start, retry with wake check
+            if (apiInternal?.isColdStartLikeError?.(verifyError)) {
+              console.log('Detected cold start, polling backend health...');
+              const woke = await wakeServer({ maxWaitMs: 25000, attemptTimeoutMs: 8000 });
+              
+              if (woke) {
+                // Retry token verification after backend is ready
+                try {
+                  const retryResponse = await api.get('/auth/me');
+                  const freshUser = retryResponse?.data?.data?.user;
+                  if (freshUser) {
+                    localStorage.setItem('user', JSON.stringify(freshUser));
+                    dispatch({
+                      type: AUTH_ACTIONS.LOGIN_SUCCESS,
+                      payload: {
+                        user: freshUser,
+                        token,
+                      },
+                    });
+                  }
+                } catch (retryError) {
+                  // If retry still fails, use cached data
+                  if (!cachedUser) {
+                    setToken(null);
+                    dispatch({ type: AUTH_ACTIONS.LOGOUT });
+                  }
+                }
+              } else {
+                // Backend never came online
+                if (!cachedUser) {
+                  setToken(null);
+                  dispatch({ type: AUTH_ACTIONS.LOGOUT });
+                }
+              }
+            } else {
+              // Not a cold start error, token is genuinely invalid
+              setToken(null);
+              dispatch({ type: AUTH_ACTIONS.LOGOUT });
+            }
           }
         } catch (error) {
           console.error('Token verification failed:', error);

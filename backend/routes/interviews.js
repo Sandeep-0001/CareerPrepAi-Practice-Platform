@@ -163,10 +163,30 @@ router.post('/',
   }
 );
 
+// Validation for pagination
+const validatePaginationQuery = [
+  require('express-validator').query('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be a positive integer'),
+  require('express-validator').query('limit')
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage('Limit must be between 1 and 100'),
+  require('express-validator').query('status')
+    .optional()
+    .isIn(['scheduled', 'in_progress', 'completed', 'paused'])
+    .withMessage('Invalid status value'),
+  require('express-validator').query('type')
+    .optional()
+    .isIn(['coding', 'behavioral', 'technical', 'system-design', 'ai_interview'])
+    .withMessage('Invalid interview type')
+];
+
 // @route   GET /api/interviews
 // @desc    Get user's interview history
 // @access  Private
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, validatePaginationQuery, handleValidationErrors, async (req, res) => {
   try {
     const userId = req.user._id;
     const { page = 1, limit = 10, status, type } = req.query;
@@ -176,14 +196,16 @@ router.get('/', authenticateToken, async (req, res) => {
     if (status) filter.status = status;
     if (type) filter.type = type;
 
-    // Calculate pagination
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    // Calculate pagination with safe integer conversion
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (pageNum - 1) * limitNum;
 
     // Get interviews with pagination
     const interviews = await Interview.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
+      .limit(limitNum)
       .select('-questions.testCases -responses.feedback'); // Exclude large fields for list view
 
     // Get total count for pagination
@@ -194,8 +216,8 @@ router.get('/', authenticateToken, async (req, res) => {
       data: {
         interviews,
         pagination: {
-          current: parseInt(page),
-          pages: Math.ceil(total / parseInt(limit)),
+          current: pageNum,
+          pages: Math.ceil(total / limitNum),
           total,
           hasNext: skip + interviews.length < total,
           hasPrev: parseInt(page) > 1

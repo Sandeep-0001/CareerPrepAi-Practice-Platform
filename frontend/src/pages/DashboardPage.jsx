@@ -43,20 +43,48 @@ const DashboardPage = () => {
           setError(null);
         }
 
-        const [statsRes, interviewsRes, progressRes] = await Promise.all([
-          apiMethods.users.getStats(),
-          apiMethods.interviews.getAll({ page: 1, limit: 3 }),
-          apiMethods.progress.get()
-        ]);
+        // Load stats first (critical data needed for dashboard)
+        try {
+          const statsRes = await apiMethods.users.getStats();
+          if (mounted) {
+            setStatsData(statsRes.data?.data || null);
+          }
+        } catch (statsError) {
+          console.error('Stats load error:', statsError);
+          if (mounted) {
+            setStatsData(null); // Use empty state instead of failing
+          }
+        }
 
-        if (!mounted) return;
+        // Load interviews in background (non-critical, can fail gracefully)
+        try {
+          const interviewsRes = await apiMethods.interviews.getAll({ page: 1, limit: 3 });
+          if (mounted) {
+            setRecentInterviews(interviewsRes.data?.data?.interviews || []);
+          }
+        } catch (interviewsError) {
+          console.error('Interviews load error:', interviewsError);
+          if (mounted) {
+            setRecentInterviews([]); // Fallback to empty
+          }
+        }
 
-        setStatsData(statsRes.data?.data || null);
-        setRecentInterviews(interviewsRes.data?.data?.interviews || []);
-        setProgressData(progressRes.data?.data?.progress || null);
+        // Load progress in background (non-critical)
+        try {
+          const progressRes = await apiMethods.progress.get();
+          if (mounted) {
+            setProgressData(progressRes.data?.data?.progress || null);
+          }
+        } catch (progressError) {
+          console.error('Progress load error:', progressError);
+          if (mounted) {
+            setProgressData(null); // Fallback to null
+          }
+        }
+
       } catch (e) {
         if (!mounted) return;
-        if (!silent) setError('Failed to load dashboard data');
+        if (!silent) setError('Failed to load some dashboard data. Please refresh.');
       } finally {
         if (!mounted) return;
         if (!silent) setLoading(false);
@@ -65,11 +93,20 @@ const DashboardPage = () => {
 
     loadDashboard();
 
+    // Increase polling interval to 30s and skip if tab not active
+    let lastRefreshTime = Date.now();
+    const MIN_REFRESH_INTERVAL = 30 * 1000; // 30 seconds minimum
+
     const intervalId = setInterval(() => {
       if (document.visibilityState === 'visible') {
-        loadDashboard({ silent: true });
+        const now = Date.now();
+        // Only refresh if 30+ seconds have passed since last refresh
+        if (now - lastRefreshTime >= MIN_REFRESH_INTERVAL) {
+          loadDashboard({ silent: true });
+          lastRefreshTime = now;
+        }
       }
-    }, 15000);
+    }, 10000);
 
     const onFocus = () => loadDashboard({ silent: true });
     const onVisibility = () => {
@@ -310,9 +347,46 @@ const DashboardPage = () => {
       )}
 
       {!loading && error && (
-        <div className="card p-8 mb-8 shadow-xl border-2 border-red-200">
-          <p className="text-error-600 font-medium">{error}</p>
-          <p className="text-secondary-600 text-sm mt-1">Please refresh and try again.</p>
+        <div className="card p-8 mb-8 shadow-xl border-2 border-red-200 bg-red-50">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-red-700 mb-2">Unable to Load Dashboard</h3>
+              <p className="text-red-600 font-medium">{error}</p>
+              <p className="text-red-600 text-sm mt-2">This can happen if the backend server is starting up. Please try again in a moment.</p>
+            </div>
+            <button
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                // Reload dashboard
+                const loadDashboard = async () => {
+                  try {
+                    const statsRes = await apiMethods.users.getStats();
+                    setStatsData(statsRes.data?.data || null);
+                  } catch (e) {
+                    setStatsData(null);
+                  }
+                  try {
+                    const interviewsRes = await apiMethods.interviews.getAll({ page: 1, limit: 3 });
+                    setRecentInterviews(interviewsRes.data?.data?.interviews || []);
+                  } catch (e) {
+                    setRecentInterviews([]);
+                  }
+                  try {
+                    const progressRes = await apiMethods.progress.get();
+                    setProgressData(progressRes.data?.data?.progress || null);
+                  } catch (e) {
+                    setProgressData(null);
+                  }
+                  setLoading(false);
+                };
+                loadDashboard();
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors whitespace-nowrap ml-4"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       )}
 

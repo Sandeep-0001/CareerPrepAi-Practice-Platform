@@ -83,8 +83,13 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add timestamp to prevent caching
-    if (config.method === 'get') {
+    // Only add cache-busting timestamp for sensitive data endpoints
+    // This prevents browser caching for real-time data while allowing
+    // caching for static/cacheable endpoints
+    const CACHE_BUST_ENDPOINTS = ['/auth/me', '/users/stats', '/users/profile', '/progress', '/users/preferences'];
+    const shouldBustCache = CACHE_BUST_ENDPOINTS.some(ep => config.url.includes(ep));
+
+    if (config.method === 'get' && shouldBustCache) {
       config.params = {
         ...config.params,
         _t: Date.now(),

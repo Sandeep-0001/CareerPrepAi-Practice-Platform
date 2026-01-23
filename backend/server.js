@@ -195,7 +195,11 @@ const start = async () => {
       await mongoose.connect(MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: isProduction ? 15000 : 5000,  // Increased for Render cold start
+        socketTimeoutMS: isProduction ? 45000 : 10000,
+        retryWrites: true,
+        maxPoolSize: isProduction ? 10 : 5,
+        minPoolSize: isProduction ? 2 : 1,
       });
       console.log('✅ MongoDB connected successfully');
     } catch (err) {

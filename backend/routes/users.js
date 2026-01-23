@@ -174,13 +174,12 @@ router.put('/preferences',
 router.get('/stats', authenticateToken, async (req, res) => {
   try {
     const user = req.user;
-    const progress = await Progress.findOne({ userId: user._id });
+    let progress = await Progress.findOne({ userId: user._id });
 
+    // Create progress record if it doesn't exist (fixes cold start issues)
     if (!progress) {
-      return res.status(404).json({
-        success: false,
-        message: 'Progress data not found'
-      });
+      progress = new Progress({ userId: user._id });
+      await progress.save();
     }
 
     const stats = {

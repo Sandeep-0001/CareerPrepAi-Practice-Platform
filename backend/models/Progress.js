@@ -230,8 +230,11 @@ const progressSchema = new mongoose.Schema({
 
 // Indexes for better performance
 progressSchema.index({ userId: 1 });
+progressSchema.index({ userId: 1, 'overallStats.lastActivityDate': -1 });
 progressSchema.index({ 'overallStats.lastActivityDate': -1 });
 progressSchema.index({ 'dailyActivity.date': -1 });
+progressSchema.index({ userId: 1, 'dailyActivity.date': -1 });
+progressSchema.index({ userId: 1, accuracyPercentage: -1 });
 
 // Virtual for accuracy percentage
 progressSchema.virtual('accuracyPercentage').get(function() {
