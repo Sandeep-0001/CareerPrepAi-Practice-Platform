@@ -456,6 +456,8 @@ export const AuthProvider = ({ children }) => {
       // Clear token and state regardless of API call result
       setToken(null);
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+      dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { user: null, token: null } });
       toast.success('Logged out successfully');
     }
   }, [setToken]);

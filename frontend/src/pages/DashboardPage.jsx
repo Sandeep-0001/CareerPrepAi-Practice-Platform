@@ -180,7 +180,7 @@ const DashboardPage = () => {
     };
   }, [statsData]);
 
-  // Quick start interview function
+  // Quick start coding interview function
   const handleQuickStart = async (type = 'coding') => {
     setQuickStarting(true);
     try {
@@ -219,6 +219,39 @@ const DashboardPage = () => {
     }
   };
 
+  // Professional AI Interview quick start
+  const handleAIInterviewQuickStart = async () => {
+    setQuickStarting(true);
+    try {
+      // You may want to fetch user profile from context or API for real data
+      const profile = {
+        name: 'Candidate',
+        experience: '2 years',
+        currentRole: 'Software Engineer',
+        targetCompany: 'Google',
+        targetRole: 'Senior Engineer',
+        skills: [],
+        resume: '',
+        interviewType: 'behavioral', // Default, or let user choose
+        duration: 30
+      };
+
+      const res = await apiMethods.aiInterview.startPersonalized({ profile, interviewType: profile.interviewType });
+      const sessionId = res?.data?.data?.sessionId;
+      if (sessionId) {
+        toast.success('AI Interview started!', { duration: 2000 });
+        navigate(`/interview/ai/${sessionId}`);
+      } else {
+        toast.error('Failed to start AI Interview');
+      }
+    } catch (error) {
+      console.error('Failed to start AI Interview:', error);
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to start AI Interview');
+    } finally {
+      setQuickStarting(false);
+    }
+  };
+
   const quickActions = [
     {
       title: 'Start Interview Session',
@@ -242,7 +275,7 @@ const DashboardPage = () => {
       title: 'AI Interview Practice',
       description: 'Real-time conversation with AI interviewer',
       icon: MessageSquare,
-      action: () => handleQuickStart('ai_interview'),
+      action: handleAIInterviewQuickStart,
       color: 'from-purple-600 to-pink-600',
       textColor: 'text-white',
       quick: true
