@@ -193,7 +193,7 @@ const QuickMockSessionPage = () => {
     return () => {
       clearInterval(intervalId);
     };
-  // ...existing code...
+  }, [session, showExplanation, currentQuestionIndex, selectedAnswer, handleNext, handleSubmit]);
 
   useEffect(() => {
     return () => {
@@ -562,5 +562,4 @@ const QuickMockSessionPage = () => {
     </div>
   );
 };
-
 export default QuickMockSessionPage;
