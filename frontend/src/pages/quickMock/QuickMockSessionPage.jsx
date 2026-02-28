@@ -122,6 +122,16 @@ const QuickMockSessionPage = () => {
     }
   }, [sessionId, answers, submitting, navigate, clearAutoAdvanceTimeout]);
 
+  const handleNext = useCallback(() => {
+    // Manual Next should disable auto-next to avoid double-advancing.
+    clearAutoAdvanceTimeout();
+    if (currentQuestionIndex < session.questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+      setTimeRemaining(session?.timePerQuestion || 60);
+    }
+  }, [currentQuestionIndex, session, clearAutoAdvanceTimeout]);
 
 
 
@@ -242,16 +252,6 @@ const QuickMockSessionPage = () => {
   };
 
 
-  const handleNext = useCallback(() => {
-    // Manual Next should disable auto-next to avoid double-advancing.
-    clearAutoAdvanceTimeout();
-    if (currentQuestionIndex < session.questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
-      setTimeRemaining(session?.timePerQuestion || 60);
-    }
-  }, [currentQuestionIndex, session, clearAutoAdvanceTimeout]);
   // ...existing code...
 
   const handlePrevious = () => {
