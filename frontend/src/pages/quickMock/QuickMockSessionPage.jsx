@@ -193,7 +193,7 @@ const QuickMockSessionPage = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [session, currentQuestionIndex, showExplanation, selectedAnswer, handleNext, handleSubmit]);
+  // ...existing code...
 
   useEffect(() => {
     return () => {
@@ -252,6 +252,7 @@ const QuickMockSessionPage = () => {
       setTimeRemaining(session?.timePerQuestion || 60);
     }
   }, [currentQuestionIndex, session, clearAutoAdvanceTimeout]);
+  // ...existing code...
 
   const handlePrevious = () => {
     clearAutoAdvanceTimeout();
