@@ -543,16 +543,18 @@ const QuickMockSessionPage = () => {
                   </>
                 )}
               </button>
-            ) : showExplanation ? (
-              <button
-                onClick={handleNext}
-                className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-5 h-5" />
-              </button>
             ) : (
-              <div className="w-32"></div>
+              showExplanation ? (
+                <button
+                  onClick={handleNext}
+                  className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              ) : (
+                <div className="w-32"></div>
+              )
             )}
           </div>
         </motion.div>
