@@ -202,7 +202,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-base font-bold text-white tracking-tight">CareerPrep</span>
+                <span className="text-base font-bold text-white tracking-tight">CareerPrep AI</span>
                 <span className="text-xs font-semibold text-slate-400 tracking-wide">Practice Platform</span>
               </div>
             </motion.div>
@@ -233,7 +233,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-base font-bold text-white tracking-tight">CareerPrep</span>
+                <span className="text-base font-bold text-white tracking-tight">CareerPrep AI</span>
                 <span className="text-xs font-semibold text-slate-400 tracking-wide">Practice Platform</span>
               </div>
             </div>

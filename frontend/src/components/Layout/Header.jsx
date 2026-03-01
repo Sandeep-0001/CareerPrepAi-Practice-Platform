@@ -21,7 +21,7 @@ const Header = ({ onMenuClick }) => {
       <div className="h-5 w-px bg-slate-200 lg:hidden" />
 
       <div className="hidden md:flex flex-col">
-        <span className="text-xs sm:text-sm font-semibold text-slate-900">CareerPrep Dashboard</span>
+        <span className="text-xs sm:text-sm font-semibold text-slate-900">CareerPrep AI Dashboard</span>
         <span className="text-xs text-slate-500">Focused coding interview preparation</span>
       </div>
 
