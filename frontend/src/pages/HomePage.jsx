@@ -127,7 +127,7 @@ const HomePage = () => {
               {!logoError ? (
                 <img
                   src="/logo.jpeg"
-                  alt="CareerPrep"
+                  alt="CareerPrep AI"
                   className="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-sm"
                   onError={() => setLogoError(true)}
                 />
@@ -136,7 +136,7 @@ const HomePage = () => {
                   <GraduationCap className="w-5 h-5" />
                 </div>
               )}
-              <span className="text-xl font-bold gradient-text">CareerPrep</span>
+              <span className="text-xl font-bold gradient-text">CareerPrep AI</span>
             </div>
 
             {/* Mobile menu button */}
