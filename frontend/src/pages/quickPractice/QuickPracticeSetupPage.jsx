@@ -61,6 +61,8 @@ const QuickPracticeSetupPage = () => {
             <span>50</span>
             <span>75</span>
             <span>100</span>
+          </div>
+        </div>
 
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 mb-3">Categories</h3>
