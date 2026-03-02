@@ -78,6 +78,8 @@ const QuickPracticeSetupPage = () => {
               { key: 'javascript', label: 'JavaScript' },
               { key: 'react', label: 'React' },
               { key: 'nodejs', label: 'Node.js' },
+              { key: 'mock', label: 'Full Stack using Nodejs Mock SDC-AI' },
+              { key: 'mock1', label: 'Full Stack using Nodejs Mock Similar' },
               { key: 'general', label: 'General' }
             ].map((c) => (
               <label key={c.key} className="flex items-center space-x-2 p-3 border border-secondary-200 rounded-lg">

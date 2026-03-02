@@ -220,6 +220,8 @@ const AdminQuickPracticeQuestionsPage = () => {
               <option value="html">HTML</option>
               <option value="css">CSS</option>
               <option value="javascript">JavaScript</option>
+              <option value="devops">DevOps</option>
+              <option value="angular">Angular</option>
             </select>
           </div>
           <div>
@@ -310,6 +312,8 @@ const AdminQuickPracticeQuestionsPage = () => {
               <option value="html">HTML</option>
               <option value="css">CSS</option>
               <option value="javascript">JavaScript</option>
+              <option value="devops">Full Stack using Nodejs Mock SDC-AI</option>
+              <option value="angular">Full Stack using Nodejs similar</option>
             </select>
             <select className="input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
               <option value="">All Difficulty</option>
