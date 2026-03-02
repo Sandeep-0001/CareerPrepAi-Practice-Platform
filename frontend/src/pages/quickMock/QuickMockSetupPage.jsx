@@ -98,6 +98,13 @@ const QuickMockSetupPage = () => {
       return;
     }
 
+    if (totalAvailableQuestions < numberOfQuestions) {
+      toast.error(
+        `Only ${totalAvailableQuestions} question${totalAvailableQuestions !== 1 ? 's' : ''} available for the selected topic${selectedTopics.length !== 1 ? 's' : ''}. Please reduce the question count or select more topics.`
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await apiMethods.quickPractice.start({
@@ -118,9 +125,21 @@ const QuickMockSetupPage = () => {
     }
   };
 
+  const totalAvailableQuestions = useMemo(() => {
+    return topics
+      .filter(t => selectedTopics.includes(t.name))
+      .reduce((sum, t) => sum + t.total, 0);
+  }, [topics, selectedTopics]);
+
   const estimatedTime = useMemo(() => {
     return Math.ceil((numberOfQuestions * timeLimit) / 60);
   }, [numberOfQuestions, timeLimit]);
+
+  useEffect(() => {
+    if (selectedTopics.length > 0 && totalAvailableQuestions > 0 && numberOfQuestions > totalAvailableQuestions) {
+      setNumberOfQuestions(Math.max(5, totalAvailableQuestions));
+    }
+  }, [totalAvailableQuestions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loadingTopics) {
     return (
@@ -280,10 +299,15 @@ const QuickMockSetupPage = () => {
                   <label className="block text-sm font-semibold text-slate-700 mb-3">
                     Number of Questions: <span className="text-blue-600 font-bold">{numberOfQuestions}</span>
                   </label>
+                  {selectedTopics.length > 0 && totalAvailableQuestions < numberOfQuestions && (
+                    <p className="text-xs text-red-500 mb-2">
+                      Only {totalAvailableQuestions} questions available for selected topics.
+                    </p>
+                  )}
                   <input
                     type="range"
                     min="5"
-                    max="100"
+                    max={selectedTopics.length > 0 ? Math.min(100, totalAvailableQuestions) : 100}
                     step="1"
                     value={numberOfQuestions}
                     onChange={(e) => setNumberOfQuestions(parseInt(e.target.value))}
