@@ -101,78 +101,6 @@ const normalizeCorrectIndex = (value, optionsLength) => {
   return null;
 };
 
-// ── Embedded mock questions (Node.js + Linux quick practice set) ──────────────
-const MOCK_SEED_QUESTIONS = [
-  { category: 'mock', difficulty: 'medium', prompt: 'Why are inodes important?', options: ['Store file name','Store file data','Store file metadata','Store directory path'], correctIndex: 2, explanation: 'Inode stores metadata like permissions, owner, timestamps, and size but not filename or actual file data.', tags: ['linux','inode','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What does fs.unlink('test.txt') do?", options: ['Create file','Rename file','Delete file','Read file'], correctIndex: 2, explanation: 'unlink deletes the specified file from the filesystem.', tags: ['nodejs','fs','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What does path.resolve('test','demo.txt') do?", options: ['Deletes path','Creates file','Resolves to absolute path','Reads path'], correctIndex: 2, explanation: 'resolve converts given segments into an absolute path.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the result of fs.writeFileSync('test.txt','NodeJS')?", options: ["File is created with content 'NodeJS'",'File is empty','Error occurs','Nothing happens'], correctIndex: 0, explanation: 'writeFileSync creates or overwrites the file with provided content.', tags: ['nodejs','fs','synchronous'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'What does ~ represent in Linux?', options: ['Root','Temp','Home','Bin'], correctIndex: 2, explanation: 'Tilde (~) represents the current user\'s home directory.', tags: ['linux','paths','basics'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'What happens when opening http://localhost:3000 for the given server?', options: ['It will throw an error','It will print Hello in browser','Server will stop immediately','Nothing will happen'], correctIndex: 1, explanation: 'Server responds with "Hello" when accessed.', tags: ['nodejs','http','server'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'What is missing to handle requests in http.createServer(); server.listen(8000); ?', options: ['Port number','Callback function','Module import','File path'], correctIndex: 1, explanation: 'createServer requires a request handler callback to process requests.', tags: ['nodejs','http','server'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What does fs.exists('a.txt', callback) check?", options: ['File size','File content','If file exists','File type'], correctIndex: 2, explanation: 'exists checks whether the specified file is present.', tags: ['nodejs','fs','filesystem'] },
-  { category: 'mock', difficulty: 'medium', prompt: "What does res.writeHead(200, {'Content-Type':'text/plain'}) do?", options: ['Closes server','Sets response header and status','Reads header','Deletes header'], correctIndex: 1, explanation: 'writeHead sets HTTP status code and response headers.', tags: ['nodejs','http','headers'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What does fs.appendFileSync('a.txt','Hello') do?", options: ['Deletes file','Appends Hello to file','Overwrites file','Reads file'], correctIndex: 1, explanation: 'appendFileSync adds content to the end of the file.', tags: ['nodejs','fs','synchronous'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'Which event is emitted when an HTTP server receives a request?', options: ['response','connect','receive','request'], correctIndex: 3, explanation: "The 'request' event is emitted whenever a client makes a request to the server.", tags: ['nodejs','http','events'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which property gives the file name from a path?', options: ['path.basename()','path.filename()','path.name()','path.file()'], correctIndex: 0, explanation: 'path.basename() returns the last portion (file name) of a path.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'medium', prompt: "What is true about fs.readFile('abc.txt','utf8',callback)?", options: ['It reads file synchronously','It blocks event loop','It reads file asynchronously','It deletes file'], correctIndex: 2, explanation: 'readFile is asynchronous and does not block the event loop.', tags: ['nodejs','fs','async'] },
-  { category: 'mock', difficulty: 'medium', prompt: "When will response be sent in the given server code checking req.method == 'POST'?", options: ['On GET request','On POST request','On DELETE request','Always'], correctIndex: 1, explanation: 'Response is sent only when request method is POST.', tags: ['nodejs','http','server'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the output of path.dirname('/home/user/app.js')?", options: ['/home/user','app.js','/home','user'], correctIndex: 0, explanation: 'dirname returns the directory portion of the path.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the output of path.basename('/home/user/file.txt')?", options: ['/home/user/file.txt','file','file.txt','txt'], correctIndex: 2, explanation: 'basename returns the file name including extension.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'According to Unix philosophy, why are small programs preferred?', options: ['They consume less RAM','They are easier to combine using pipes','They run faster always','They replace GUIs'], correctIndex: 1, explanation: 'Unix philosophy encourages small tools that can be combined using pipes.', tags: ['linux','unix','philosophy'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which statement is TRUE about Node.js?', options: ['It blocks execution','It is event-driven','It is multi-threaded by default','It runs only on Linux'], correctIndex: 1, explanation: 'Node.js follows an event-driven, non-blocking model.', tags: ['nodejs','architecture','event-loop'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the output of path.extname('index.html')?", options: ['html','.html','index','.index'], correctIndex: 1, explanation: 'extname returns the extension including the dot.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the output of new URL('https://example.com:8080/path').port?", options: ['80','8080','/path','null'], correctIndex: 1, explanation: 'The port property returns the port number in the URL.', tags: ['nodejs','url','web'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is the output of myUrl.searchParams.get('name') for URL 'http://localhost:3000/test?name=Akki'?", options: ['name','Akki','null','test'], correctIndex: 1, explanation: 'searchParams.get returns the value of the given query parameter.', tags: ['nodejs','url','querystring'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'What is the main role of Git?', options: ['Running servers','Tracking changes','Compiling code','Managing database'], correctIndex: 1, explanation: 'Git is a version control system used to track code changes.', tags: ['git','basics','version-control'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which method returns total system memory in bytes?', options: ['os.memory()','os.totalmem()','os.ram()','os.meminfo()'], correctIndex: 1, explanation: 'os.totalmem() returns total system memory in bytes.', tags: ['nodejs','os','system'] },
-  { category: 'mock', difficulty: 'medium', prompt: "What is the output of path.isAbsolute('/test/file')?", options: ['FALSE','TRUE','Error','/test/file'], correctIndex: 1, explanation: 'isAbsolute returns true for absolute paths.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'What is the issue in if (x = 5)?', options: ['Comparison operator used correctly','Assignment instead of comparison','Syntax error','Type error'], correctIndex: 1, explanation: "Single '=' performs assignment instead of comparison.", tags: ['javascript','operators','bug'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which method returns the home directory of current user?', options: ['os.home()','os.homedir()','os.userdir()','process.home()'], correctIndex: 1, explanation: 'os.homedir() returns the current user\'s home directory.', tags: ['nodejs','os','system'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'Why is Promise.all() used?', options: ['Sequential execution','Parallel execution','Stopping promises','Deleting promises'], correctIndex: 1, explanation: 'Promise.all executes multiple promises in parallel.', tags: ['nodejs','promise','async'] },
-  { category: 'mock', difficulty: 'medium', prompt: "What does path.normalize('/test//demo/../file.txt') do?", options: ['Delete path','Cleans path structure','Create directory','Return filename'], correctIndex: 1, explanation: "normalize resolves '..' and redundant slashes.", tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What does fs.mkdir('testDir') do?", options: ['Create directory','Delete directory','Read directory','Rename directory'], correctIndex: 0, explanation: 'mkdir creates a new directory.', tags: ['nodejs','fs','filesystem'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'Which Git stage is correct order?', options: ['Add → Modify → Commit','Modify → Add → Commit','Commit → Add → Modify','Push → Commit → Add'], correctIndex: 1, explanation: 'Correct order is Modify → Add → Commit.', tags: ['git','workflow','staging'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'What type of operation is fs.readFileSync()?', options: ['Asynchronous','Event-driven','Synchronous blocking','Stream-based'], correctIndex: 2, explanation: 'readFileSync blocks execution until complete.', tags: ['nodejs','fs','synchronous'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'What HTTP status is sent when res.statusCode = 404?', options: ['200','500','404','302'], correctIndex: 2, explanation: '404 indicates resource not found.', tags: ['nodejs','http','statuscode'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which method returns CPU architecture?', options: ['os.platform()','os.arch()','os.cores()','os.processor()'], correctIndex: 1, explanation: "os.arch() returns architecture like x64.", tags: ['nodejs','os','module'] },
-  { category: 'mock', difficulty: 'medium', prompt: "What is output of parsed.query.id for '?id=10'?", options: ['page','10','id','null'], correctIndex: 1, explanation: 'query.id returns 10.', tags: ['nodejs','url','querystring'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is output of path.join('folder','file.txt')?", options: ['/folder/file.txt','folder/file.txt','Error','file.txt'], correctIndex: 1, explanation: 'path.join joins segments properly.', tags: ['nodejs','path','filesystem'] },
-  { category: 'mock', difficulty: 'easy', prompt: 'Which module creates basic Node.js web server?', options: ['express','url','fs','http'], correctIndex: 3, explanation: 'http module creates web server.', tags: ['nodejs','http','server'] },
-  { category: 'mock', difficulty: 'easy', prompt: "What is output of new URL('http://localhost:3000/about').pathname?", options: ['localhost','/about','3000','http'], correctIndex: 1, explanation: 'pathname returns the URL path.', tags: ['nodejs','url','web'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'What does req.url represent?', options: ['Server port','HTTP method','Requested URL path','Hostname'], correctIndex: 2, explanation: 'req.url stores requested path from client.', tags: ['nodejs','http','request'] },
-  { category: 'mock', difficulty: 'medium', prompt: 'Which method converts relative path to absolute path?', options: ['path.absolute()','path.resolve()','path.fullpath()','path.abspath()'], correctIndex: 1, explanation: 'path.resolve converts to absolute path.', tags: ['nodejs','path','filesystem'] },
-];
-
-// POST /seed-mock  — inserts all embedded mock questions, skips duplicates
-router.post('/seed-mock', async (req, res) => {
-  try {
-    let inserted = 0;
-    let skipped = 0;
-    const failures = [];
-
-    for (const q of MOCK_SEED_QUESTIONS) {
-      const exists = await QuickPracticeQuestion.findOne({ prompt: q.prompt, category: q.category }).select('_id').lean();
-      if (exists) { skipped++; continue; }
-      try {
-        await QuickPracticeQuestion.create(q);
-        inserted++;
-      } catch (e) {
-        failures.push({ prompt: q.prompt.slice(0, 60), error: e.message });
-      }
-    }
-
-    return res.status(201).json({
-      success: true,
-      message: `Seed complete: ${inserted} inserted, ${skipped} already existed${failures.length ? `, ${failures.length} failed` : ''}`,
-      data: { inserted, skipped, failed: failures.length, failures }
-    });
-  } catch (err) {
-    console.error('seed-mock error:', err);
-    return res.status(500).json({ success: false, message: 'Seed failed: ' + err.message });
-  }
-});
-
 router.post('/import', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
@@ -184,11 +112,15 @@ router.post('/import', upload.single('file'), async (req, res) => {
 
     let rows = [];
     if (ext === 'csv') {
-      const text = req.file.buffer.toString('utf8');
+      // Strip BOM (\uFEFF) added by Excel/Windows before parsing
+      let text = req.file.buffer.toString('utf8');
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
       rows = parseCsv(text, {
         columns: true,
         skip_empty_lines: true,
-        trim: true
+        trim: true,
+        relax_quotes: true,
+        relax_column_count: true
       });
     } else if (ext === 'xlsx' || ext === 'xls') {
       const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
@@ -249,9 +181,10 @@ router.post('/import', upload.single('file'), async (req, res) => {
     });
 
     if (docs.length === 0) {
+      const firstReason = failures.length > 0 ? ` First error (row ${failures[0].row}): ${failures[0].message}` : '';
       return res.status(400).json({
         success: false,
-        message: 'No valid rows to import',
+        message: `No valid rows to import.${firstReason}`,
         data: { inserted: 0, failed: failures.length, failures }
       });
     }
