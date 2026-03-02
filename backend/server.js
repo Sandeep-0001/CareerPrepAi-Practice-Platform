@@ -48,8 +48,14 @@ const isAllowedOrigin = (origin) => {
 };
 
 // Define allowed origins for CORS
+// FRONTEND_URL may be a single URL or a comma-separated list of URLs
+const frontendUrls = (process.env.FRONTEND_URL || 'http://localhost:3001')
+  .split(',')
+  .map((u) => u.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:3001',
+  ...frontendUrls,
   'http://localhost:3000',
   'http://localhost:3001',
   'http://127.0.0.1:3000',
@@ -98,8 +104,16 @@ const corsOptions = {
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  // Explicitly allow headers needed for JSON + multipart/form-data uploads.
+  // Without this, the CORS preflight (OPTIONS) for file uploads can fail in
+  // production because the reverse proxy or browser sends extra headers that
+  // the default reflection doesn't cover reliably.
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS']
 };
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 // Body parsing middleware
