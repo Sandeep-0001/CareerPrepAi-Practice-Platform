@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
 
-const { ALLOWED_QUICK_PRACTICE_CATEGORIES } = require('../constants/quickPractice');
-
 const quickPracticeQuestionSchema = new mongoose.Schema(
   {
     category: {
       type: String,
-      required: true,
-      enum: ALLOWED_QUICK_PRACTICE_CATEGORIES
+      required: true
     },
     prompt: {
       type: String,

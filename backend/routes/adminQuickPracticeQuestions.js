@@ -30,13 +30,15 @@ router.use(authenticateToken, requireAdmin);
 
 const normalizeCategory = (value) => {
   const v = String(value || '').trim().toLowerCase();
+  if (!v) return '';
   if (v === 'js') return 'javascript';
   if (v === 'oops') return 'oop';
   if (v === 'data-structures' || v === 'data structures' || v === 'algorithms') return 'dsa';
   if (v === 'system design' || v === 'systemdesign') return 'system-design';
   if (v === 'network' || v === 'networking') return 'networks';
   if (ALLOWED_QUICK_PRACTICE_CATEGORIES.includes(v)) return v;
-  return '';
+  // For admin imports: accept any non-empty category (admins are trusted)
+  return v;
 };
 
 const normalizeDifficulty = (value) => {

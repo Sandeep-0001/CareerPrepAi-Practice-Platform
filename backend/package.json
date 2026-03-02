@@ -9,7 +9,8 @@
     "test": "jest --passWithNoTests",
     "make-admin": "node scripts/makeAdmin.js",
     "fix-interview-question-types": "node scripts/fixInterviewQuestionTypes.js",
-    "seed-quick-mock": "node scripts/seedQuickMockQuestions.js"
+    "seed-quick-mock": "node scripts/seedQuickMockQuestions.js",
+    "seed-mock-csv": "node scripts/seedMockCsvQuestions.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
