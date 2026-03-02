@@ -18,7 +18,9 @@ const ALLOWED_QUICK_PRACTICE_CATEGORIES = [
 
   // Added topics
   'linux',
-  'git'
+  'git',
+  'devops',
+  'angular'
 ];
 
 const ALLOWED_QUICK_PRACTICE_COUNTS = [10, 20, 30, 50];
