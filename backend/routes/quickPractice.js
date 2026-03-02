@@ -104,7 +104,7 @@ router.get('/topics', async (req, res) => {
 router.post(
   '/start',
   [
-    body('count').isIn(ALLOWED_QUICK_PRACTICE_COUNTS).withMessage(`count must be one of: ${ALLOWED_QUICK_PRACTICE_COUNTS.join(', ')}`),
+    body('count').isInt({ min: 5, max: 100 }).withMessage('count must be a number between 5 and 100'),
     body('categories').optional().isArray().withMessage('categories must be an array'),
     body('categories.*').optional().isIn(ALLOWED_QUICK_PRACTICE_CATEGORIES).withMessage('Invalid category'),
     body('timePerQuestion').optional().isInt({ min: 10, max: 300 }).withMessage('timePerQuestion must be between 10 and 300 seconds')
