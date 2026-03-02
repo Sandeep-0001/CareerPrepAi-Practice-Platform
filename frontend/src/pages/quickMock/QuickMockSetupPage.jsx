@@ -29,7 +29,11 @@ const topicIcons = {
   javascript: Zap,
   react: Target,
   nodejs: Server,
-  general: BookOpen
+  linux: Server,
+  git: Code,
+  general: BookOpen,
+  mock: Target,
+  mock1: Target
 };
 
 const topicColors = {
@@ -45,7 +49,11 @@ const topicColors = {
   javascript: 'from-blue-600 to-blue-700',
   react: 'from-blue-600 to-blue-700',
   nodejs: 'from-blue-600 to-blue-700',
-  general: 'from-blue-600 to-blue-700'
+  linux: 'from-blue-600 to-blue-700',
+  git: 'from-blue-600 to-blue-700',
+  general: 'from-blue-600 to-blue-700',
+  mock: 'from-purple-600 to-purple-700',
+  mock1: 'from-indigo-600 to-indigo-700'
 };
 
 const QuickMockSetupPage = () => {
@@ -200,7 +208,12 @@ const QuickMockSetupPage = () => {
                          topic.name === 'networks' ? 'CN (Computer Networks)' :
                          topic.name === 'system-design' ? 'System Design' :
                          topic.name === 'behavioral' ? 'Behavioral' :
-                         topic.name === 'nodejs' ? 'Node.js' : topic.name}
+                         topic.name === 'nodejs' ? 'Node.js' :
+                         topic.name === 'linux' ? 'Linux' :
+                         topic.name === 'git' ? 'Git' :
+                         topic.name === 'mock' ? 'Full Stack Mock (Node.js / Linux)' :
+                         topic.name === 'mock1' ? 'Full Stack Mock — Similar Set' :
+                         topic.name}
                       </h3>
                       
                       <div className="text-sm text-slate-600 mb-2">

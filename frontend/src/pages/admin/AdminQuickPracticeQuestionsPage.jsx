@@ -246,26 +246,37 @@ const AdminQuickPracticeQuestionsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="form-category" className="block text-sm font-medium text-secondary-700 mb-2">Category</label>
-            <select id="form-category" name="form-category" className="input" value={form.category} onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}>
-              <option value="dsa">DSA</option>
-              <option value="oop">OOP</option>
-              <option value="dbms">DBMS</option>
-              <option value="os">Operating Systems</option>
-              <option value="networks">Computer Networks</option>
-              <option value="system-design">System Design</option>
-              <option value="behavioral">Behavioral</option>
-              <option value="html">HTML</option>
-              <option value="css">CSS</option>
-              <option value="javascript">JavaScript</option>
-              <option value="react">React</option>
-              <option value="nodejs">Node.js</option>
-              <option value="linux">Linux</option>
-              <option value="git">Git</option>
-              <option value="general">General</option>
-              <option value="mock">Full Stack using Nodejs Mock SDC-AI</option>
-              <option value="mock1">Full Stack using Nodejs Mock Similar</option>
-            </select>
+            <label htmlFor="form-category" className="block text-sm font-medium text-secondary-700 mb-2">
+              Category <span className="text-xs text-secondary-400">— pick from list or type a custom value (e.g.&nbsp;mock, mock2)</span>
+            </label>
+            <input
+              id="form-category"
+              name="form-category"
+              list="category-datalist"
+              className="input"
+              value={form.category}
+              onChange={(e) => setForm((p) => ({ ...p, category: e.target.value.trim().toLowerCase() }))}
+              placeholder="e.g. dsa, mock, mock2"
+            />
+            <datalist id="category-datalist">
+              <option value="dsa" />
+              <option value="oop" />
+              <option value="dbms" />
+              <option value="os" />
+              <option value="networks" />
+              <option value="system-design" />
+              <option value="behavioral" />
+              <option value="html" />
+              <option value="css" />
+              <option value="javascript" />
+              <option value="react" />
+              <option value="nodejs" />
+              <option value="linux" />
+              <option value="git" />
+              <option value="general" />
+              <option value="mock" />
+              <option value="mock1" />
+            </datalist>
           </div>
           <div>
             <label htmlFor="form-difficulty" className="block text-sm font-medium text-secondary-700 mb-2">Difficulty</label>
