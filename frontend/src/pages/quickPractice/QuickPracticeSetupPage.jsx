@@ -12,7 +12,7 @@ const QuickPracticeSetupPage = () => {
   const [count, setCount] = useState(10);
   const [categories, setCategories] = useState([]);
 
-  const canStart = useMemo(() => categories.length > 0 && [10, 20, 30, 50].includes(count), [categories, count]);
+  const canStart = useMemo(() => categories.length > 0 && count >= 5 && count <= 100, [categories, count]);
 
   const toggleCategory = (cat) => {
     setCategories((prev) => {
@@ -45,22 +45,22 @@ const QuickPracticeSetupPage = () => {
 
       <div className="card p-6 space-y-6">
         <div>
-          <h3 className="text-lg font-semibold text-secondary-900 mb-3">Question Count</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {[10, 20, 30, 50].map((n) => (
-              <button
-                key={n}
-                onClick={() => setCount(n)}
-                className={`p-3 rounded-lg border-2 text-left transition-all ${count === n ? 'border-primary-500 bg-primary-50' : 'border-secondary-200 hover:border-secondary-300'}`}
-              >
-                <div className="font-semibold text-secondary-900">{n}</div>
-                <div className="text-xs text-secondary-600">
-                  {n === 10 ? 'Quick warm-up' : n === 20 ? 'Standard set' : n === 30 ? 'Deep practice' : 'Full mock'}
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+          <h3 className="text-lg font-semibold text-secondary-900 mb-3">Question Count: <span className="text-primary-600 font-bold">{count}</span></h3>
+          <input
+            type="range"
+            min="5"
+            max="100"
+            step="1"
+            value={count}
+            onChange={(e) => setCount(parseInt(e.target.value))}
+            className="w-full h-2 bg-secondary-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+          />
+          <div className="flex justify-between text-xs text-secondary-500 mt-1">
+            <span>5</span>
+            <span>25</span>
+            <span>50</span>
+            <span>75</span>
+            <span>100</span>
 
         <div>
           <h3 className="text-lg font-semibold text-secondary-900 mb-3">Categories</h3>

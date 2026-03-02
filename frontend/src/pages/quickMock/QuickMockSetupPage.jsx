@@ -278,20 +278,23 @@ const QuickMockSetupPage = () => {
                 {/* Number of Questions */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-3">
-                    Number of Questions: {numberOfQuestions}
+                    Number of Questions: <span className="text-blue-600 font-bold">{numberOfQuestions}</span>
                   </label>
                   <input
                     type="range"
-                    min="10"
-                    max="50"
-                    step="10"
+                    min="5"
+                    max="100"
+                    step="1"
                     value={numberOfQuestions}
                     onChange={(e) => setNumberOfQuestions(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-500 mt-1">
-                    <span>10</span>
+                    <span>5</span>
+                    <span>25</span>
                     <span>50</span>
+                    <span>75</span>
+                    <span>100</span>
                   </div>
                 </div>
 

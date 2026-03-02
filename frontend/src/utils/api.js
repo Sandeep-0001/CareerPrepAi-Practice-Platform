@@ -319,9 +319,10 @@ export const apiMethods = {
       importFile: (file) => {
         const form = new FormData();
         form.append('file', file);
-        return api.post('/admin/quick-practice-questions/import', form, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        // Do NOT set Content-Type manually — the browser must set it automatically
+        // so it includes the required multipart boundary (e.g. multipart/form-data; boundary=----...)
+        // Stripping Content-Type here lets axios/browser handle it correctly in production.
+        return api.post('/admin/quick-practice-questions/import', form);
       }
     },
     preparationSheet: {
