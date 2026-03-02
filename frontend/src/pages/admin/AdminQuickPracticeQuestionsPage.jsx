@@ -23,6 +23,22 @@ const AdminQuickPracticeQuestionsPage = () => {
   const [difficulty, setDifficulty] = useState('');
   const [form, setForm] = useState(empty);
 
+  const [seeding, setSeeding] = useState(false);
+
+  const seedMockQuestions = async () => {
+    setSeeding(true);
+    try {
+      const res = await apiMethods.admin.quickPracticeQuestions.seedMock();
+      const data = res?.data?.data;
+      toast.success(`${res?.data?.message || 'Seed complete'}`);
+      if ((data?.inserted ?? 0) > 0) fetchItems();
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Seed failed');
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const canSubmit = useMemo(() => {
     const promptOk = form.prompt.trim().length > 0;
     const opts = (form.options || []).map((x) => String(x || '').trim()).filter(Boolean);
@@ -153,11 +169,21 @@ const AdminQuickPracticeQuestionsPage = () => {
       const data = res?.data?.data;
       const inserted = data?.inserted ?? 0;
       const failed = data?.failed ?? 0;
-      toast.success(`Imported ${inserted} questions${failed ? ` (${failed} failed)` : ''}`);
+      if (inserted > 0) {
+        toast.success(`Imported ${inserted} questions${failed ? ` (${failed} rows failed — check console)` : ''}`);
+      } else {
+        toast.error(`Import failed — 0 questions inserted. ${failed} rows had errors.`);
+      }
+      if (data?.failures?.length > 0) {
+        console.error('Import row failures:', JSON.stringify(data.failures, null, 2));
+      }
       setImportFile(null);
-      fetchItems();
+      if (inserted > 0) fetchItems();
     } catch (e) {
-      toast.error(e?.response?.data?.message || 'Import failed');
+      const serverMsg = e?.response?.data?.message || '';
+      const failures = e?.response?.data?.data?.failures || [];
+      console.error('Import error:', serverMsg, failures);
+      toast.error(serverMsg || 'Import failed');
     } finally {
       setImporting(false);
     }
@@ -181,7 +207,17 @@ const AdminQuickPracticeQuestionsPage = () => {
               Upload 100+ questions at once. Supported: .csv, .xlsx, .xls
             </p>
           </div>
-          <button className="btn btn-secondary" onClick={downloadCsvTemplate}>Download CSV Template</button>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              className="btn btn-primary"
+              onClick={seedMockQuestions}
+              disabled={seeding}
+              title="Seed all 39 built-in Node.js / Linux mock questions directly — no file upload needed"
+            >
+              {seeding ? 'Seeding…' : 'Seed Mock Questions (Node.js/Linux)'}
+            </button>
+            <button className="btn btn-secondary" onClick={downloadCsvTemplate}>Download CSV Template</button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
@@ -222,8 +258,11 @@ const AdminQuickPracticeQuestionsPage = () => {
               <option value="html">HTML</option>
               <option value="css">CSS</option>
               <option value="javascript">JavaScript</option>
-              <option value="devops">DevOps</option>
-              <option value="angular">Angular</option>
+              <option value="react">React</option>
+              <option value="nodejs">Node.js</option>
+              <option value="linux">Linux</option>
+              <option value="git">Git</option>
+              <option value="general">General</option>
               <option value="mock">Full Stack using Nodejs Mock SDC-AI</option>
               <option value="mock1">Full Stack using Nodejs Mock Similar</option>
             </select>
@@ -326,6 +365,11 @@ const AdminQuickPracticeQuestionsPage = () => {
               <option value="html">HTML</option>
               <option value="css">CSS</option>
               <option value="javascript">JavaScript</option>
+              <option value="react">React</option>
+              <option value="nodejs">Node.js</option>
+              <option value="linux">Linux</option>
+              <option value="git">Git</option>
+              <option value="general">General</option>
               <option value="mock">Full Stack using Nodejs Mock SDC-AI</option>
               <option value="mock1">Full Stack using Nodejs Mock Similar</option>
             </select>

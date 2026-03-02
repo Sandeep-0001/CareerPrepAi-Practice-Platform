@@ -315,6 +315,7 @@ export const apiMethods = {
       create: (data) => api.post('/admin/quick-practice-questions', data),
       update: (id, data) => api.put(`/admin/quick-practice-questions/${id}`, data),
       remove: (id) => api.delete(`/admin/quick-practice-questions/${id}`),
+      seedMock: () => api.post('/admin/quick-practice-questions/seed-mock'),
       importFile: (file) => {
         const form = new FormData();
         form.append('file', file);
