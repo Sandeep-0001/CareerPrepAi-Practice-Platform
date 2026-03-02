@@ -407,11 +407,13 @@ int main() {
       <form onSubmit={onSubmit} className="mt-6 bg-white border border-secondary-200 rounded-xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
+            <label htmlFor="code-leetcode-ref" className="block text-sm font-medium text-secondary-700 mb-1">
               LeetCode link / slug / number (auto-fill)
             </label>
             <div className="flex flex-col sm:flex-row gap-2">
               <input
+                id="code-leetcode-ref"
+                name="code-leetcode-ref"
                 className="input w-full"
                 value={leetCodeRef}
                 onChange={(e) => setLeetCodeRef(e.target.value)}
@@ -427,8 +429,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Source</label>
+            <label htmlFor="code-source" className="block text-sm font-medium text-secondary-700 mb-1">Source</label>
             <select
+              id="code-source"
+              name="code-source"
               className="input w-full"
               value={form.source}
               onChange={(e) => setForm({ ...form, source: e.target.value })}
@@ -439,8 +443,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Difficulty</label>
+            <label htmlFor="code-difficulty" className="block text-sm font-medium text-secondary-700 mb-1">Difficulty</label>
             <select
+              id="code-difficulty"
+              name="code-difficulty"
               className="input w-full"
               value={form.difficulty}
               onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
@@ -452,8 +458,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">LeetCode ID (optional)</label>
+            <label htmlFor="code-source-id" className="block text-sm font-medium text-secondary-700 mb-1">LeetCode ID (optional)</label>
             <input
+              id="code-source-id"
+              name="code-source-id"
               className="input w-full"
               value={form.sourceId}
               onChange={(e) => setForm({ ...form, sourceId: e.target.value })}
@@ -462,8 +470,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">LeetCode URL (optional)</label>
+            <label htmlFor="code-source-url" className="block text-sm font-medium text-secondary-700 mb-1">LeetCode URL (optional)</label>
             <input
+              id="code-source-url"
+              name="code-source-url"
               className="input w-full"
               value={form.sourceUrl}
               onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })}
@@ -472,8 +482,10 @@ int main() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Title</label>
+            <label htmlFor="code-title" className="block text-sm font-medium text-secondary-700 mb-1">Title</label>
             <input
+              id="code-title"
+              name="code-title"
               className="input w-full"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
@@ -482,8 +494,10 @@ int main() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Description</label>
+            <label htmlFor="code-description" className="block text-sm font-medium text-secondary-700 mb-1">Description</label>
             <textarea
+              id="code-description"
+              name="code-description"
               className="input w-full min-h-[140px]"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -492,8 +506,10 @@ int main() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Constraints (optional)</label>
+            <label htmlFor="code-constraints" className="block text-sm font-medium text-secondary-700 mb-1">Constraints (optional)</label>
             <textarea
+              id="code-constraints"
+              name="code-constraints"
               className="input w-full min-h-[80px]"
               value={form.constraints}
               onChange={(e) => setForm({ ...form, constraints: e.target.value })}
@@ -502,8 +518,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Tags (optional)</label>
+            <label htmlFor="code-tags" className="block text-sm font-medium text-secondary-700 mb-1">Tags (optional)</label>
             <input
+              id="code-tags"
+              name="code-tags"
               className="input w-full"
               value={tagsCsv}
               onChange={(e) => setTagsCsv(e.target.value)}
@@ -512,8 +530,10 @@ int main() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Hints (optional)</label>
+            <label htmlFor="code-hints" className="block text-sm font-medium text-secondary-700 mb-1">Hints (optional)</label>
             <input
+              id="code-hints"
+              name="code-hints"
               className="input w-full"
               value={hintsCsv}
               onChange={(e) => setHintsCsv(e.target.value)}
@@ -533,18 +553,27 @@ int main() {
               <div key={idx} className="border border-secondary-200 rounded-lg p-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <input
+                    id={`example-input-${idx}`}
+                    name={`example-input-${idx}`}
+                    aria-label={`Example ${idx + 1} input`}
                     className="input"
                     value={ex.input}
                     onChange={(e) => updateExample(idx, 'input', e.target.value)}
                     placeholder="Input"
                   />
                   <input
+                    id={`example-output-${idx}`}
+                    name={`example-output-${idx}`}
+                    aria-label={`Example ${idx + 1} output`}
                     className="input"
                     value={ex.output}
                     onChange={(e) => updateExample(idx, 'output', e.target.value)}
                     placeholder="Output"
                   />
                   <input
+                    id={`example-explanation-${idx}`}
+                    name={`example-explanation-${idx}`}
+                    aria-label={`Example ${idx + 1} explanation`}
                     className="input"
                     value={ex.explanation}
                     onChange={(e) => updateExample(idx, 'explanation', e.target.value)}
@@ -576,8 +605,10 @@ int main() {
               <div key={idx} className="border border-secondary-200 rounded-lg p-4">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                   <div className="md:col-span-5">
-                    <label className="block text-xs text-secondary-600 mb-1">Input</label>
+                    <label htmlFor={`tc-input-${idx}`} className="block text-xs text-secondary-600 mb-1">Input</label>
                     <input
+                      id={`tc-input-${idx}`}
+                      name={`tc-input-${idx}`}
                       className="input w-full"
                       value={tc.input}
                       onChange={(e) => updateTest(idx, 'input', e.target.value)}
@@ -585,8 +616,10 @@ int main() {
                     />
                   </div>
                   <div className="md:col-span-5">
-                    <label className="block text-xs text-secondary-600 mb-1">Expected Output</label>
+                    <label htmlFor={`tc-output-${idx}`} className="block text-xs text-secondary-600 mb-1">Expected Output</label>
                     <input
+                      id={`tc-output-${idx}`}
+                      name={`tc-output-${idx}`}
                       className="input w-full"
                       value={tc.expectedOutput}
                       onChange={(e) => updateTest(idx, 'expectedOutput', e.target.value)}
@@ -628,8 +661,10 @@ int main() {
 
           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">JavaScript</label>
+              <label htmlFor="code-starter-js" className="block text-sm font-medium text-secondary-700 mb-1">JavaScript</label>
               <textarea
+                id="code-starter-js"
+                name="code-starter-js"
                 className="input w-full min-h-[180px] font-mono text-sm"
                 value={form.starterCode?.javascript || ''}
                 onChange={(e) =>
@@ -642,8 +677,10 @@ int main() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">Python</label>
+              <label htmlFor="code-starter-py" className="block text-sm font-medium text-secondary-700 mb-1">Python</label>
               <textarea
+                id="code-starter-py"
+                name="code-starter-py"
                 className="input w-full min-h-[180px] font-mono text-sm"
                 value={form.starterCode?.python || ''}
                 onChange={(e) =>
@@ -656,8 +693,10 @@ int main() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">Java</label>
+              <label htmlFor="code-starter-java" className="block text-sm font-medium text-secondary-700 mb-1">Java</label>
               <textarea
+                id="code-starter-java"
+                name="code-starter-java"
                 className="input w-full min-h-[180px] font-mono text-sm"
                 value={form.starterCode?.java || ''}
                 onChange={(e) =>
@@ -670,8 +709,10 @@ int main() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-1">C++</label>
+              <label htmlFor="code-starter-cpp" className="block text-sm font-medium text-secondary-700 mb-1">C++</label>
               <textarea
+                id="code-starter-cpp"
+                name="code-starter-cpp"
                 className="input w-full min-h-[180px] font-mono text-sm"
                 value={form.starterCode?.cpp || ''}
                 onChange={(e) =>
@@ -703,12 +744,15 @@ int main() {
           <h2 className="text-lg font-semibold text-secondary-900">Existing Questions</h2>
           <div className="flex flex-col sm:flex-row gap-2">
             <input
+              id="code-filter-search"
+              name="code-filter-search"
+              aria-label="Search coding questions"
               className="input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search title"
             />
-            <select className="input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+            <select id="code-filter-difficulty" name="code-filter-difficulty" aria-label="Filter by difficulty" className="input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
               <option value="">All difficulties</option>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>

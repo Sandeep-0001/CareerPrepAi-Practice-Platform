@@ -84,10 +84,8 @@ const LoginPage = () => {
               <Mail className="h-5 w-5" style={{ color: 'var(--text-muted)' }} />
             </div>
             <input
+              id="email"
               {...register('email', {
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: 'Invalid email address'
                 }
               })}
@@ -115,9 +113,8 @@ const LoginPage = () => {
               <Lock className="h-5 w-5" style={{ color: 'var(--text-muted)' }} />
             </div>
             <input
+              id="password"
               {...register('password', {
-                required: 'Password is required',
-                minLength: {
                   value: 6,
                   message: 'Password must be at least 6 characters'
                 }

@@ -105,10 +105,12 @@ const AIInterviewSetupPage = () => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-name" className="block text-sm font-medium text-secondary-700 mb-2">
             Full Name *
           </label>
           <input
+            id="interview-name"
+            name="interview-name"
             type="text"
             value={profile.name}
             onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
@@ -118,10 +120,12 @@ const AIInterviewSetupPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-experience" className="block text-sm font-medium text-secondary-700 mb-2">
             Years of Experience *
           </label>
           <select
+            id="interview-experience"
+            name="interview-experience"
             value={profile.experience}
             onChange={(e) => setProfile(prev => ({ ...prev, experience: e.target.value }))}
             className="input"
@@ -136,10 +140,12 @@ const AIInterviewSetupPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-role" className="block text-sm font-medium text-secondary-700 mb-2">
             Current Role/Position *
           </label>
           <input
+            id="interview-role"
+            name="interview-role"
             type="text"
             value={profile.currentRole}
             onChange={(e) => setProfile(prev => ({ ...prev, currentRole: e.target.value }))}
@@ -167,10 +173,12 @@ const AIInterviewSetupPage = () => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-company" className="block text-sm font-medium text-secondary-700 mb-2">
             Target Company *
           </label>
           <input
+            id="interview-company"
+            name="interview-company"
             type="text"
             value={profile.targetCompany}
             onChange={(e) => setProfile(prev => ({ ...prev, targetCompany: e.target.value }))}
@@ -180,10 +188,12 @@ const AIInterviewSetupPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-target-role" className="block text-sm font-medium text-secondary-700 mb-2">
             Target Role *
           </label>
           <input
+            id="interview-target-role"
+            name="interview-target-role"
             type="text"
             value={profile.targetRole}
             onChange={(e) => setProfile(prev => ({ ...prev, targetRole: e.target.value }))}
@@ -193,10 +203,12 @@ const AIInterviewSetupPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-type" className="block text-sm font-medium text-secondary-700 mb-2">
             Interview Type
           </label>
           <select
+            id="interview-type"
+            name="interview-type"
             value={profile.interviewType}
             onChange={(e) => setProfile(prev => ({ ...prev, interviewType: e.target.value }))}
             className="input"
@@ -209,10 +221,12 @@ const AIInterviewSetupPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-duration" className="block text-sm font-medium text-secondary-700 mb-2">
             Interview Duration
           </label>
           <select
+            id="interview-duration"
+            name="interview-duration"
             value={profile.duration}
             onChange={(e) => setProfile(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
             className="input"
@@ -243,11 +257,13 @@ const AIInterviewSetupPage = () => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label htmlFor="interview-skill-input" className="block text-sm font-medium text-secondary-700 mb-2">
             Add Skills
           </label>
           <div className="flex space-x-2">
             <input
+              id="interview-skill-input"
+              name="interview-skill-input"
               type="text"
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}

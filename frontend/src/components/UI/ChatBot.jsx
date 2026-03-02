@@ -241,6 +241,9 @@ const ChatBot = () => {
                 <div className="flex-shrink-0 border-t border-slate-200 bg-white p-3">
                   <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
                     <input
+                      id="chatbot-message"
+                      name="chatbot-message"
+                      aria-label="Chat message"
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyPress={handleKeyPress}

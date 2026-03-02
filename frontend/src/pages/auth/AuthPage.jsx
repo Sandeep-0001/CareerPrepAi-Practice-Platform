@@ -324,6 +324,7 @@ const AuthPage = () => {
                               <User className="h-5 w-5 text-secondary-400" />
                             </div>
                             <input
+                              id="name"
                               {...register('name', {
                                 required: !isLogin && 'Full name is required',
                                 minLength: {
@@ -355,6 +356,7 @@ const AuthPage = () => {
                             <Mail className="h-5 w-5 text-secondary-400" />
                           </div>
                           <input
+                            id="email"
                             {...register('email', {
                               required: 'Email is required',
                               pattern: {
@@ -397,6 +399,7 @@ const AuthPage = () => {
                               <Lock className="h-5 w-5 text-secondary-400" />
                             </div>
                             <input
+                              id="otp"
                               {...register('otp', {
                                 required: !isLogin && 'OTP is required',
                                 pattern: {
@@ -432,8 +435,8 @@ const AuthPage = () => {
                             <Lock className="h-5 w-5 text-secondary-400" />
                           </div>
                           <input
+                            id="password"
                             {...register('password', {
-                              required: 'Password is required',
                               minLength: {
                                 value: 6,
                                 message: 'Password must be at least 6 characters'
@@ -474,6 +477,7 @@ const AuthPage = () => {
                               <Lock className="h-5 w-5 text-secondary-400" />
                             </div>
                             <input
+                              id="confirmPassword"
                               {...register('confirmPassword', {
                                 required: !isLogin && 'Please confirm your password',
                                 validate: value => isLogin || value === password || 'Passwords do not match'
@@ -587,8 +591,10 @@ const AuthPage = () => {
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-secondary-700 mb-1">Email</label>
+                            <label htmlFor="reset-email" className="block text-xs font-medium text-secondary-700 mb-1">Email</label>
                             <input
+                              id="reset-email"
+                              name="reset-email"
                               type="email"
                               value={resetEmail}
                               onChange={(e) => setResetEmail(e.target.value)}
@@ -599,8 +605,10 @@ const AuthPage = () => {
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs font-medium text-secondary-700 mb-1">OTP</label>
+                              <label htmlFor="reset-otp" className="block text-xs font-medium text-secondary-700 mb-1">OTP</label>
                               <input
+                                id="reset-otp"
+                                name="reset-otp"
                                 type="text"
                                 value={resetOtp}
                                 onChange={(e) => setResetOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
@@ -623,9 +631,11 @@ const AuthPage = () => {
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-secondary-700 mb-1">New password</label>
+                            <label htmlFor="reset-new-password" className="block text-xs font-medium text-secondary-700 mb-1">New password</label>
                             <div className="relative">
                               <input
+                                id="reset-new-password"
+                                name="reset-new-password"
                                 type={showResetPassword ? 'text' : 'password'}
                                 value={resetNewPassword}
                                 onChange={(e) => setResetNewPassword(e.target.value)}
@@ -647,9 +657,11 @@ const AuthPage = () => {
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-secondary-700 mb-1">Confirm new password</label>
+                            <label htmlFor="reset-confirm-password" className="block text-xs font-medium text-secondary-700 mb-1">Confirm new password</label>
                             <div className="relative">
                               <input
+                                id="reset-confirm-password"
+                                name="reset-confirm-password"
                                 type={showResetConfirmPassword ? 'text' : 'password'}
                                 value={resetConfirmPassword}
                                 onChange={(e) => setResetConfirmPassword(e.target.value)}

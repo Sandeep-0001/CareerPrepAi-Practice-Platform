@@ -195,8 +195,10 @@ const AdminPreparationSheetPage = () => {
 
         <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Title</label>
+            <label htmlFor="sheet-title" className="block text-sm font-medium text-secondary-700 mb-1">Title</label>
             <input
+              id="sheet-title"
+              name="sheet-title"
               className="input"
               value={form.title}
               onChange={(e) => onChange('title', e.target.value)}
@@ -205,8 +207,10 @@ const AdminPreparationSheetPage = () => {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Question Link</label>
+            <label htmlFor="sheet-url" className="block text-sm font-medium text-secondary-700 mb-1">Question Link</label>
             <input
+              id="sheet-url"
+              name="sheet-url"
               className="input"
               type="url"
               value={form.questionUrl}
@@ -216,18 +220,18 @@ const AdminPreparationSheetPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Topic</label>
-            <input className="input" value={form.topic} onChange={(e) => onChange('topic', e.target.value)} />
+            <label htmlFor="sheet-topic" className="block text-sm font-medium text-secondary-700 mb-1">Topic</label>
+            <input id="sheet-topic" name="sheet-topic" className="input" value={form.topic} onChange={(e) => onChange('topic', e.target.value)} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Platform</label>
-            <input className="input" value={form.platform} onChange={(e) => onChange('platform', e.target.value)} />
+            <label htmlFor="sheet-platform" className="block text-sm font-medium text-secondary-700 mb-1">Platform</label>
+            <input id="sheet-platform" name="sheet-platform" className="input" value={form.platform} onChange={(e) => onChange('platform', e.target.value)} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Difficulty</label>
-            <select className="input" value={form.difficulty} onChange={(e) => onChange('difficulty', e.target.value)}>
+            <label htmlFor="sheet-difficulty" className="block text-sm font-medium text-secondary-700 mb-1">Difficulty</label>
+            <select id="sheet-difficulty" name="sheet-difficulty" className="input" value={form.difficulty} onChange={(e) => onChange('difficulty', e.target.value)}>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
@@ -235,8 +239,10 @@ const AdminPreparationSheetPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">Order</label>
+            <label htmlFor="sheet-order" className="block text-sm font-medium text-secondary-700 mb-1">Order</label>
             <input
+              id="sheet-order"
+              name="sheet-order"
               className="input"
               type="number"
               min="0"

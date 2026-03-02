@@ -186,8 +186,10 @@ const AdminQuickPracticeQuestionsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-secondary-700 mb-2">File</label>
+            <label htmlFor="qp-import-file" className="block text-sm font-medium text-secondary-700 mb-2">File</label>
             <input
+              id="qp-import-file"
+              name="qp-import-file"
               type="file"
               accept=".csv,.xlsx,.xls"
               className="input"
@@ -208,8 +210,8 @@ const AdminQuickPracticeQuestionsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-2">Category</label>
-            <select className="input" value={form.category} onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}>
+            <label htmlFor="form-category" className="block text-sm font-medium text-secondary-700 mb-2">Category</label>
+            <select id="form-category" name="form-category" className="input" value={form.category} onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}>
               <option value="dsa">DSA</option>
               <option value="oop">OOP</option>
               <option value="dbms">DBMS</option>
@@ -227,16 +229,18 @@ const AdminQuickPracticeQuestionsPage = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-2">Difficulty</label>
-            <select className="input" value={form.difficulty} onChange={(e) => setForm((p) => ({ ...p, difficulty: e.target.value }))}>
+            <label htmlFor="form-difficulty" className="block text-sm font-medium text-secondary-700 mb-2">Difficulty</label>
+            <select id="form-difficulty" name="form-difficulty" className="input" value={form.difficulty} onChange={(e) => setForm((p) => ({ ...p, difficulty: e.target.value }))}>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-2">Correct Option</label>
+            <label htmlFor="form-correctIndex" className="block text-sm font-medium text-secondary-700 mb-2">Correct Option</label>
             <select
+              id="form-correctIndex"
+              name="form-correctIndex"
               className="input"
               value={form.correctIndex}
               onChange={(e) => setForm((p) => ({ ...p, correctIndex: parseInt(e.target.value, 10) }))}
@@ -249,8 +253,10 @@ const AdminQuickPracticeQuestionsPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">Prompt</label>
+          <label htmlFor="form-prompt" className="block text-sm font-medium text-secondary-700 mb-2">Prompt</label>
           <textarea
+            id="form-prompt"
+            name="form-prompt"
             className="input min-h-[96px]"
             value={form.prompt}
             onChange={(e) => setForm((p) => ({ ...p, prompt: e.target.value }))}
@@ -261,8 +267,10 @@ const AdminQuickPracticeQuestionsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {form.options.map((opt, idx) => (
             <div key={idx}>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">Option {idx + 1}</label>
+              <label htmlFor={`form-option-${idx}`} className="block text-sm font-medium text-secondary-700 mb-2">Option {idx + 1}</label>
               <input
+                id={`form-option-${idx}`}
+                name={`form-option-${idx}`}
                 className="input"
                 value={opt}
                 onChange={(e) => updateOption(idx, e.target.value)}
@@ -273,8 +281,10 @@ const AdminQuickPracticeQuestionsPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">Explanation (optional)</label>
+          <label htmlFor="form-explanation" className="block text-sm font-medium text-secondary-700 mb-2">Explanation (optional)</label>
           <textarea
+            id="form-explanation"
+            name="form-explanation"
             className="input min-h-[80px]"
             value={form.explanation}
             onChange={(e) => setForm((p) => ({ ...p, explanation: e.target.value }))}
@@ -283,8 +293,10 @@ const AdminQuickPracticeQuestionsPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-2">Tags (comma-separated)</label>
+          <label htmlFor="form-tags" className="block text-sm font-medium text-secondary-700 mb-2">Tags (comma-separated)</label>
           <input
+            id="form-tags"
+            name="form-tags"
             className="input"
             value={form.tagsCsv}
             onChange={(e) => setForm((p) => ({ ...p, tagsCsv: e.target.value }))}
@@ -301,8 +313,8 @@ const AdminQuickPracticeQuestionsPage = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
           <h3 className="text-lg font-semibold text-secondary-900">Questions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full md:w-auto">
-            <input className="input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" />
-            <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
+            <input id="filter-search" name="filter-search" aria-label="Search questions" className="input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" />
+            <select id="filter-category" name="filter-category" aria-label="Filter by category" className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">All Categories</option>
               <option value="dsa">DSA</option>
               <option value="oop">OOP</option>
@@ -317,7 +329,7 @@ const AdminQuickPracticeQuestionsPage = () => {
               <option value="mock">Full Stack using Nodejs Mock SDC-AI</option>
               <option value="mock1">Full Stack using Nodejs Mock Similar</option>
             </select>
-            <select className="input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+            <select id="filter-difficulty" name="filter-difficulty" aria-label="Filter by difficulty" className="input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
               <option value="">All Difficulty</option>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>

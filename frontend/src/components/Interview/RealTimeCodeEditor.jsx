@@ -222,6 +222,9 @@ int main() {
       <div className="flex items-center justify-between p-4 border-b border-secondary-200 bg-white">
         <div className="flex items-center space-x-4">
           <select 
+            id="code-language"
+            name="code-language"
+            aria-label="Programming language"
             value={effectiveLanguage}
             onChange={(e) => handleLanguageSelectChange(e.target.value)}
             className="text-sm border border-secondary-300 rounded px-3 py-1"
@@ -273,6 +276,9 @@ int main() {
       {/* Code Editor */}
       <div className="flex-1 relative">
         <textarea
+          id="code-editor"
+          name="code-editor"
+          aria-label="Code editor"
           value={code}
           onChange={(e) => handleCodeChange(e.target.value)}
           className="w-full h-full resize-none border-0 p-4 font-mono text-sm focus:outline-none focus:ring-0"

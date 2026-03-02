@@ -305,6 +305,9 @@ const AIInterviewPage = () => {
           </div>
           
           <textarea
+            id="interview-response"
+            name="interview-response"
+            aria-label="Interview response"
             value={response}
             onChange={(e) => setResponse(e.target.value)}
             placeholder="Type your response here or use the microphone to speak..."

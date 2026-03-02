@@ -182,12 +182,14 @@ const ProfilePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label htmlFor="profile-name" className="block text-sm font-medium text-secondary-700 mb-2">
                   Full Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400" />
                   <input
+                    id="profile-name"
+                    name="profile-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -198,12 +200,14 @@ const ProfilePage = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label htmlFor="profile-email" className="block text-sm font-medium text-secondary-700 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400" />
                   <input
+                    id="profile-email"
+                    name="profile-email"
                     type="email"
                     value={user?.email || ''}
                     disabled
@@ -216,10 +220,12 @@ const ProfilePage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">
+              <label htmlFor="profile-bio" className="block text-sm font-medium text-secondary-700 mb-2">
                 Bio
               </label>
               <textarea
+                id="profile-bio"
+                name="profile-bio"
                 rows={4}
                 className="input"
                 placeholder="Tell us about yourself..."
@@ -230,10 +236,10 @@ const ProfilePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">
+                <label htmlFor="profile-experience" className="block text-sm font-medium text-secondary-700 mb-2">
                   Experience Level
                 </label>
-                <select className="input" value={experience} onChange={(e) => setExperience(e.target.value)}>
+                <select id="profile-experience" name="profile-experience" className="input" value={experience} onChange={(e) => setExperience(e.target.value)}>
                   <option value="fresher">Fresher</option>
                   <option value="0-1">0-1 years</option>
                   <option value="1-3">1-3 years</option>
@@ -244,8 +250,10 @@ const ProfilePage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">Skills (comma separated)</label>
+              <label htmlFor="profile-skills" className="block text-sm font-medium text-secondary-700 mb-2">Skills (comma separated)</label>
               <input
+                id="profile-skills"
+                name="profile-skills"
                 type="text"
                 className="input"
                 value={skillsCsv}
@@ -256,8 +264,10 @@ const ProfilePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">Target Companies</label>
+                <label htmlFor="profile-companies" className="block text-sm font-medium text-secondary-700 mb-2">Target Companies</label>
                 <input
+                  id="profile-companies"
+                  name="profile-companies"
                   type="text"
                   className="input"
                   value={targetCompaniesCsv}
@@ -266,8 +276,10 @@ const ProfilePage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-2">Target Roles</label>
+                <label htmlFor="profile-roles" className="block text-sm font-medium text-secondary-700 mb-2">Target Roles</label>
                 <input
+                  id="profile-roles"
+                  name="profile-roles"
                   type="text"
                   className="input"
                   value={targetRolesCsv}
