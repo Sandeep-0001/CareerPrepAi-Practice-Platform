@@ -23,22 +23,6 @@ const AdminQuickPracticeQuestionsPage = () => {
   const [difficulty, setDifficulty] = useState('');
   const [form, setForm] = useState(empty);
 
-  const [seeding, setSeeding] = useState(false);
-
-  const seedMockQuestions = async () => {
-    setSeeding(true);
-    try {
-      const res = await apiMethods.admin.quickPracticeQuestions.seedMock();
-      const data = res?.data?.data;
-      toast.success(`${res?.data?.message || 'Seed complete'}`);
-      if ((data?.inserted ?? 0) > 0) fetchItems();
-    } catch (e) {
-      toast.error(e?.response?.data?.message || 'Seed failed');
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   const canSubmit = useMemo(() => {
     const promptOk = form.prompt.trim().length > 0;
     const opts = (form.options || []).map((x) => String(x || '').trim()).filter(Boolean);
@@ -208,14 +192,6 @@ const AdminQuickPracticeQuestionsPage = () => {
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button
-              className="btn btn-primary"
-              onClick={seedMockQuestions}
-              disabled={seeding}
-              title="Seed all 39 built-in Node.js / Linux mock questions directly — no file upload needed"
-            >
-              {seeding ? 'Seeding…' : 'Seed Mock Questions (Node.js/Linux)'}
-            </button>
             <button className="btn btn-secondary" onClick={downloadCsvTemplate}>Download CSV Template</button>
           </div>
         </div>

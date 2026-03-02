@@ -211,8 +211,8 @@ const QuickMockSetupPage = () => {
                          topic.name === 'nodejs' ? 'Node.js' :
                          topic.name === 'linux' ? 'Linux' :
                          topic.name === 'git' ? 'Git' :
-                         topic.name === 'mock' ? 'Full Stack Mock (Node.js / Linux)' :
-                         topic.name === 'mock1' ? 'Full Stack Mock — Similar Set' :
+                         topic.name === 'mock' ? 'Full Stack using Nodejs Mock SDC AI' :
+                         topic.name === 'mock1' ? 'Full Stack using Nodejs Mock — Similar Set' :
                          topic.name}
                       </h3>
                       
