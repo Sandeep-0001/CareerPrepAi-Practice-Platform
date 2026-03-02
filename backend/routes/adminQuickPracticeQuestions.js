@@ -323,7 +323,8 @@ router.get('/', async (req, res) => {
 router.post(
   '/',
   [
-    body('category').isIn(ALLOWED_QUICK_PRACTICE_CATEGORIES).withMessage('Invalid category'),
+    body('category').isString().trim().notEmpty().withMessage('Category is required'),
+    // Admin is trusted – accept any non-empty category (mock, mock1, mock2, …)
     body('prompt').isString().trim().notEmpty().withMessage('Prompt is required'),
     body('options').isArray({ min: 2 }).withMessage('Options must be an array with at least 2 items'),
     body('options.*').isString().trim().notEmpty().withMessage('Each option must be a non-empty string'),
@@ -358,7 +359,8 @@ router.post(
 router.put(
   '/:id',
   [
-    body('category').optional().isIn(ALLOWED_QUICK_PRACTICE_CATEGORIES).withMessage('Invalid category'),
+    body('category').optional().isString().trim().notEmpty().withMessage('Category must be a non-empty string'),
+    // Admin is trusted – accept any non-empty category
     body('prompt').optional().isString().trim().notEmpty().withMessage('Prompt must be a non-empty string'),
     body('options').optional().isArray({ min: 2 }).withMessage('Options must be an array with at least 2 items'),
     body('options.*').optional().isString().trim().notEmpty().withMessage('Each option must be a non-empty string'),
