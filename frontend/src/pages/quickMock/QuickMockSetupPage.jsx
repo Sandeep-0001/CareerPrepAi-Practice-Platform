@@ -100,10 +100,16 @@ const QuickMockSetupPage = () => {
 
     let activeDifficulty = difficulty;
 
-    // If the selected difficulty has no questions, fall back to mixed
-    if (totalAvailableQuestions === 0 && difficulty !== 'mixed') {
-      toast('No ' + difficulty + ' questions available for the selected topics. Using mixed difficulty instead.', { icon: '⚠️' });
-      activeDifficulty = 'mixed';
+    // Fall back to mixed if: selected difficulty has 0 questions, OR
+    // not enough questions at selected difficulty but enough questions exist overall.
+    if (difficulty !== 'mixed') {
+      if (totalAvailableQuestions === 0) {
+        toast('No ' + difficulty + ' questions available for the selected topics. Using mixed difficulty instead.', { icon: '⚠️' });
+        activeDifficulty = 'mixed';
+      } else if (totalAvailableQuestions < numberOfQuestions && totalAllQuestions >= numberOfQuestions) {
+        toast('Only ' + totalAvailableQuestions + ' ' + difficulty + ' questions available — using mixed difficulty instead.', { icon: '⚠️' });
+        activeDifficulty = 'mixed';
+      }
     }
 
     // Recalculate available count based on effective difficulty
@@ -177,14 +183,13 @@ const QuickMockSetupPage = () => {
   }, [numberOfQuestions, timeLimit]);
 
   useEffect(() => {
-    if (selectedTopics.length > 0 && effectiveAvailable > 0 && numberOfQuestions > effectiveAvailable) {
+    if (selectedTopics.length > 0 && totalAllQuestions > 0 && numberOfQuestions > totalAllQuestions) {
       const options = [10, 20, 30, 40, 50];
-      // Find the largest preset that still fits; if none fits (< 10 questions)
-      // clamp to effectiveAvailable so the guard in handleStart always fires correctly.
-      const largest = [...options].reverse().find(n => n <= effectiveAvailable) ?? effectiveAvailable;
+      // Clamp to total available (across all difficulties) so the user can still start.
+      const largest = [...options].reverse().find(n => n <= totalAllQuestions) ?? totalAllQuestions;
       setNumberOfQuestions(largest);
     }
-  }, [effectiveAvailable, difficulty]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [totalAllQuestions, difficulty]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loadingTopics) {
     return (
@@ -355,7 +360,7 @@ const QuickMockSetupPage = () => {
                   ) : null}
                   <div className="grid grid-cols-5 gap-2">
                     {[10, 20, 30, 40, 50].map((n) => {
-                      const disabled = selectedTopics.length > 0 && effectiveAvailable < n;
+                      const disabled = selectedTopics.length > 0 && totalAllQuestions < n;
                       return (
                         <button
                           key={n}
