@@ -204,7 +204,9 @@ router.get('/session/:sessionId/results', async (req, res) => {
         sessionId: session.sessionId,
         status: session.status,
         score: session.score,
+        createdAt: session.createdAt,
         completedAt: session.completedAt,
+        categories: session.categories,
         review: session.questions.map((q, index) => {
           const a = answers.find((x) => x.questionIndex === index);
           return {
@@ -378,7 +380,9 @@ router.post(
           sessionId: session.sessionId,
           status: session.status,
           score: session.score,
+          createdAt: session.createdAt,
           completedAt: session.completedAt,
+          categories: session.categories,
           review: session.questions.map((q, index) => {
             const a = deduped.find((x) => x.questionIndex === index);
             return {
