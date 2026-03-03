@@ -34,15 +34,6 @@ const server = http.createServer(app);
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Validate critical environment variables at startup
-const REQUIRED_ENV_VARS = ['JWT_SECRET'];
-const missingEnvVars = REQUIRED_ENV_VARS.filter((v) => !process.env[v]);
-if (missingEnvVars.length > 0) {
-  console.error(`❌ Missing required environment variables: ${missingEnvVars.join(', ')}`);
-  console.error('   Set these in your .env file or deployment environment.');
-  if (isProduction) process.exit(1);
-}
-
 // Define allowed origins for CORS
 // FRONTEND_URL may be a single URL or a comma-separated list of URLs
 const frontendUrls = (process.env.FRONTEND_URL || 'http://localhost:3001')

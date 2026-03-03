@@ -8,8 +8,7 @@
     "dev": "nodemon server.js",
     "test": "jest --passWithNoTests",
     "make-admin": "node scripts/makeAdmin.js",
-    "fix-interview-question-types": "node scripts/fixInterviewQuestionTypes.js",
-    "seed-quick-mock": "node scripts/seedQuickMockQuestions.js"
+    "fix-interview-question-types": "node scripts/fixInterviewQuestionTypes.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
