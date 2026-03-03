@@ -133,7 +133,13 @@ const QuickMockSetupPage = () => {
       }
     } catch (error) {
       console.error('Error creating session:', error);
-      toast.error(error?.response?.data?.message || 'Failed to create session');
+      const serverMsg = error?.response?.data?.message || '';
+      // Surface "not enough questions" clearly to admin/user
+      if (serverMsg.toLowerCase().includes('not enough') || serverMsg.toLowerCase().includes('questions in bank')) {
+        toast.error(serverMsg);
+      } else {
+        toast.error(serverMsg || 'Failed to create session');
+      }
     } finally {
       setLoading(false);
     }
@@ -173,7 +179,9 @@ const QuickMockSetupPage = () => {
   useEffect(() => {
     if (selectedTopics.length > 0 && effectiveAvailable > 0 && numberOfQuestions > effectiveAvailable) {
       const options = [10, 20, 30, 40, 50];
-      const largest = [...options].reverse().find(n => n <= effectiveAvailable) || options[0];
+      // Find the largest preset that still fits; if none fits (< 10 questions)
+      // clamp to effectiveAvailable so the guard in handleStart always fires correctly.
+      const largest = [...options].reverse().find(n => n <= effectiveAvailable) ?? effectiveAvailable;
       setNumberOfQuestions(largest);
     }
   }, [effectiveAvailable, difficulty]); // eslint-disable-line react-hooks/exhaustive-deps

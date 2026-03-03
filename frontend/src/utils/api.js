@@ -6,12 +6,14 @@ let lastNetworkToastAt = 0;
 const NETWORK_TOAST_COOLDOWN_MS = 10000;
 
 // Create axios instance
+// NOTE: Do NOT set a default Content-Type here. Axios automatically sets
+// 'Content-Type: application/json' for plain-object bodies and the correct
+// 'multipart/form-data; boundary=...' for FormData bodies. A hardcoded
+// instance-level default would override the FormData boundary in production
+// (Vercel → Render) and break all file uploads.
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || '/api',
   timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -305,8 +307,10 @@ export const apiMethods = {
       upload: (file) => {
         const form = new FormData();
         form.append('file', file);
+        // Do NOT set Content-Type manually — browser/axios must set it with
+        // the multipart boundary automatically (e.g. multipart/form-data; boundary=...)
         return api.post('/admin/coding-questions/upload', form, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+          timeout: 60000
         });
       }
     },
@@ -319,10 +323,12 @@ export const apiMethods = {
       importFile: (file) => {
         const form = new FormData();
         form.append('file', file);
-        // Do NOT set Content-Type manually — the browser must set it automatically
-        // so it includes the required multipart boundary (e.g. multipart/form-data; boundary=----...)
-        // Stripping Content-Type here lets axios/browser handle it correctly in production.
-        return api.post('/admin/quick-practice-questions/import', form);
+        // Do NOT set Content-Type manually — browser/axios must set it with
+        // the multipart boundary automatically (e.g. multipart/form-data; boundary=...)
+        // Increase timeout for large CSV imports on Render (cold-start + DB writes).
+        return api.post('/admin/quick-practice-questions/import', form, {
+          timeout: 60000
+        });
       }
     },
     preparationSheet: {
@@ -333,8 +339,10 @@ export const apiMethods = {
       upload: (file) => {
         const form = new FormData();
         form.append('file', file);
+        // Do NOT set Content-Type manually — browser/axios must set it with
+        // the multipart boundary automatically (e.g. multipart/form-data; boundary=...)
         return api.post('/admin/preparation-sheet/upload', form, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+          timeout: 60000
         });
       }
     }
@@ -346,11 +354,9 @@ export const uploadFile = async (file, endpoint) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  return api.post(endpoint, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  // Do NOT set Content-Type manually — axios/browser must set it with
+  // the multipart boundary automatically (e.g. multipart/form-data; boundary=...)
+  return api.post(endpoint, formData, { timeout: 60000 });
 };
 
 export const downloadFile = async (url, filename) => {
