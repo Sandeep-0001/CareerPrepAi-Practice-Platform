@@ -55,11 +55,29 @@ const splitTags = (value) => {
     .filter(Boolean);
 };
 
+/**
+ * Normalize every key in a parsed row:
+ * - Strip BOM (\uFEFF) Excel sometimes embeds on the first column header
+ * - Trim surrounding whitespace
+ * - Lowercase
+ * This makes the import resilient to header casing/spacing variations that
+ * cause ALL rows to fail in production when the CSV was built in Excel.
+ */
+const normalizeRowKeys = (row) => {
+  const out = {};
+  for (const [k, v] of Object.entries(row)) {
+    const key = k.replace(/^\uFEFF/, '').replace(/^\s+|\s+$/g, '').toLowerCase();
+    out[key] = v;
+  }
+  return out;
+};
+
 const extractOptionsFromRow = (row) => {
+  // row keys are already lowercased by normalizeRowKeys
   // Supports:
-  // - options: "a|b|c|d"
-  // - option1..option8 columns
-  const fromOptionsCell = String(row.options || row.Options || '').trim();
+  // - options: "a|b|c|d" (pipe-separated cell)
+  // - option1..option8 individual columns
+  const fromOptionsCell = String(row.options || '').trim();
   const options = [];
 
   if (fromOptionsCell) {
@@ -71,9 +89,7 @@ const extractOptionsFromRow = (row) => {
   }
 
   for (let i = 1; i <= 8; i += 1) {
-    const k1 = `option${i}`;
-    const k2 = `Option${i}`;
-    const v = String(row[k1] ?? row[k2] ?? '').trim();
+    const v = String(row[`option${i}`] ?? '').trim();
     if (v) options.push(v);
   }
 
@@ -138,19 +154,35 @@ router.post('/import', upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, message: 'No rows found in file' });
     }
 
+    // Normalize all row keys once (lowercase + trim + strip BOM).
+    // This is the primary defence against Excel-generated CSVs that have
+    // header casing/spacing issues causing every row to fail in production.
+    rows = rows.map(normalizeRowKeys);
+
+    // Log first row keys to Render console for quick diagnosis
+    if (rows.length > 0) {
+      console.log('[import] first row keys:', Object.keys(rows[0]));
+      console.log('[import] first row sample:', JSON.stringify(rows[0]).slice(0, 300));
+    }
+
     const failures = [];
     const docs = [];
 
     rows.forEach((row, idx) => {
       const rowNumber = idx + 2; // assuming headers at row 1
 
-      const category = normalizeCategory(row.category ?? row.Category);
-      const prompt = String(row.prompt ?? row.Prompt ?? '').trim();
-      const difficulty = normalizeDifficulty(row.difficulty ?? row.Difficulty);
-      const explanation = String(row.explanation ?? row.Explanation ?? '').trim();
-      const tags = splitTags(row.tags ?? row.Tags);
+      // All keys are already lowercased — also support common column aliases:
+      // "question" as alias for "prompt", "answer"/"correct_answer" for "correctindex"
+      const category = normalizeCategory(row.category);
+      const prompt = String(row.prompt ?? row.question ?? '').trim();
+      const difficulty = normalizeDifficulty(row.difficulty);
+      const explanation = String(row.explanation ?? '').trim();
+      const tags = splitTags(row.tags);
       const options = extractOptionsFromRow(row);
-      const correctIndex = normalizeCorrectIndex(row.correctIndex ?? row.CorrectIndex ?? row.correct_index ?? row.correct ?? row.Correct, options.length);
+      const correctIndex = normalizeCorrectIndex(
+        row.correctindex ?? row.correct_index ?? row.correct ?? row.answer ?? row.correct_answer,
+        options.length
+      );
 
       if (!category) {
         failures.push({ row: rowNumber, message: `Invalid category (allowed: ${ALLOWED_QUICK_PRACTICE_CATEGORIES.join('/')})` });
