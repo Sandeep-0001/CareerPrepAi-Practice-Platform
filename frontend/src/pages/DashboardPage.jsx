@@ -66,9 +66,6 @@ const DashboardPage = () => {
 
         if (statsResult.status === 'fulfilled') {
           const data = statsResult.value.data?.data || null;
-          console.log('[DASHBOARD DEBUG] Stats API response:', JSON.stringify(data, null, 2));
-          console.log('[DASHBOARD DEBUG] user.streakDays:', data?.user?.streakDays);
-          console.log('[DASHBOARD DEBUG] progress.overallStats.currentStreak:', data?.progress?.overallStats?.currentStreak);
           setStatsData(data);
         } else {
           console.error('Stats load error:', statsResult.reason);
