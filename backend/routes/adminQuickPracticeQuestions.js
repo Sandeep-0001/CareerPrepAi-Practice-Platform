@@ -159,11 +159,6 @@ router.post('/import', upload.single('file'), async (req, res) => {
     // header casing/spacing issues causing every row to fail in production.
     rows = rows.map(normalizeRowKeys);
 
-    // Log first row keys to Render console for quick diagnosis
-    if (rows.length > 0) {
-      console.log('[import] first row keys:', Object.keys(rows[0]));
-      console.log('[import] first row sample:', JSON.stringify(rows[0]).slice(0, 300));
-    }
 
     const failures = [];
     const docs = [];
@@ -337,7 +332,18 @@ router.put(
   handleValidationErrors,
   async (req, res) => {
     try {
-      const updated = await QuickPracticeQuestion.findByIdAndUpdate(req.params.id, req.body, {
+      // Whitelist fields — never pass req.body directly to prevent mass-assignment.
+    const { category, prompt, options, correctIndex, explanation, difficulty, tags } = req.body;
+    const allowedUpdate = {};
+    if (category !== undefined) allowedUpdate.category = category;
+    if (prompt !== undefined) allowedUpdate.prompt = prompt;
+    if (options !== undefined) allowedUpdate.options = options;
+    if (correctIndex !== undefined) allowedUpdate.correctIndex = correctIndex;
+    if (explanation !== undefined) allowedUpdate.explanation = explanation;
+    if (difficulty !== undefined) allowedUpdate.difficulty = difficulty;
+    if (tags !== undefined) allowedUpdate.tags = tags;
+
+    const updated = await QuickPracticeQuestion.findByIdAndUpdate(req.params.id, { $set: allowedUpdate }, {
         new: true,
         runValidators: true
       });

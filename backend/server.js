@@ -129,6 +129,10 @@ app.use(
     cookie: {
       secure: isProduction,
       httpOnly: true,
+      // 'none' (cross-site) is required when frontend and backend are on different
+      // origins (e.g. Vercel + Render). Must pair with secure:true which is set in
+      // production. 'lax' is safe for same-origin local dev.
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 10 * 60 * 1000, // 10 minutes – just long enough for the OAuth round-trip
     },
   })

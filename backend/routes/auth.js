@@ -13,7 +13,13 @@ const { markLoginActivityAndStreak } = require('../services/streakService');
 
 const router = express.Router();
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3001';
+// Take only the first URL when FRONTEND_URL is a comma-separated list.
+// The server.js CORS layer handles all listed origins; this variable is only
+// used for OAuth redirect targets which must be a single URL.
+const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:3001')
+  .split(',')
+  .map((u) => u.trim())
+  .filter(Boolean)[0];
 
 // Passport Google OAuth2 strategy (redirect / authorization-code flow)
 const setupGooglePassport = () => {

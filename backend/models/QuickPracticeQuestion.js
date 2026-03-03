@@ -42,6 +42,10 @@ const quickPracticeQuestionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Compound index — speeds up the /topics aggregation and /start $sample which
+// filter by category + difficulty on every mock test creation.
+quickPracticeQuestionSchema.index({ category: 1, difficulty: 1 });
+
 quickPracticeQuestionSchema.pre('validate', function (next) {
   const opts = Array.isArray(this.options) ? this.options : [];
   if (typeof this.correctIndex === 'number' && this.correctIndex >= opts.length) {
