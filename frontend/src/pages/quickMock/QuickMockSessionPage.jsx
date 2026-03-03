@@ -55,7 +55,11 @@ const QuickMockSessionPage = () => {
     javascript: Zap,
     react: Target,
     nodejs: Server,
-    general: BookOpen
+    linux: Server,
+    git: Code,
+    general: BookOpen,
+    mock: Target,
+    mock1: Target
   };
 
   const topicColors = {
@@ -71,7 +75,11 @@ const QuickMockSessionPage = () => {
     javascript: 'from-blue-600 to-blue-700',
     react: 'from-blue-600 to-blue-700',
     nodejs: 'from-blue-600 to-blue-700',
-    general: 'from-blue-600 to-blue-700'
+    linux: 'from-blue-600 to-blue-700',
+    git: 'from-blue-600 to-blue-700',
+    general: 'from-blue-600 to-blue-700',
+    mock: 'from-purple-600 to-purple-700',
+    mock1: 'from-indigo-600 to-indigo-700'
   };
 
   const loadSession = useCallback(async () => {
@@ -277,7 +285,7 @@ const QuickMockSessionPage = () => {
   };
 
   const currentQuestion = session?.questions[currentQuestionIndex];
-  const Icon = currentQuestion ? topicIcons[currentQuestion.category] : BookOpen;
+  const Icon = currentQuestion ? (topicIcons[currentQuestion.category] || BookOpen) : BookOpen;
   const correctIndex = currentQuestion?.correctIndex;
 
   if (loading) {
@@ -309,7 +317,7 @@ const QuickMockSessionPage = () => {
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className={`w-10 h-10 bg-gradient-to-r ${topicColors[currentQuestion.category]} rounded-lg flex items-center justify-center`}>
+              <div className={`w-10 h-10 bg-gradient-to-r ${topicColors[currentQuestion.category] || 'from-blue-600 to-blue-700'} rounded-lg flex items-center justify-center`}>
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -366,7 +374,7 @@ const QuickMockSessionPage = () => {
             {/* Question Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <span className={`px-3 py-1 bg-gradient-to-r ${topicColors[currentQuestion.category]} text-white rounded-full text-xs font-semibold capitalize`}>
+                <span className={`px-3 py-1 bg-gradient-to-r ${topicColors[currentQuestion.category] || 'from-blue-600 to-blue-700'} text-white rounded-full text-xs font-semibold capitalize`}>
                   {currentQuestion.category === 'dsa' ? 'DSA' :
                    currentQuestion.category === 'oop' ? 'OOP' :
                    currentQuestion.category === 'dbms' ? 'DBMS' :

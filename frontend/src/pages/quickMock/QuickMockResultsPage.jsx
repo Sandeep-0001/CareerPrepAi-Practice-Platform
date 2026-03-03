@@ -35,7 +35,11 @@ const topicIcons = {
   javascript: Zap,
   react: Target,
   nodejs: Server,
-  general: BookOpen
+  linux: Server,
+  git: Code,
+  general: BookOpen,
+  mock: Target,
+  mock1: Target
 };
 
 const topicColors = {
@@ -51,7 +55,11 @@ const topicColors = {
   javascript: 'from-blue-600 to-blue-700',
   react: 'from-blue-600 to-blue-700',
   nodejs: 'from-blue-600 to-blue-700',
-  general: 'from-blue-600 to-blue-700'
+  linux: 'from-blue-600 to-blue-700',
+  git: 'from-blue-600 to-blue-700',
+  general: 'from-blue-600 to-blue-700',
+  mock: 'from-purple-600 to-purple-700',
+  mock1: 'from-indigo-600 to-indigo-700'
 };
 
 const QuickMockResultsPage = () => {
@@ -304,7 +312,7 @@ const QuickMockResultsPage = () => {
                     <div key={category} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className={`w-8 h-8 bg-gradient-to-r ${topicColors[category]} rounded-lg flex items-center justify-center`}>
+                          <div className={`w-8 h-8 bg-gradient-to-r ${topicColors[category] || 'from-blue-600 to-blue-700'} rounded-lg flex items-center justify-center`}>
                             <Icon className="w-4 h-4 text-white" />
                           </div>
                           <div>
@@ -332,7 +340,7 @@ const QuickMockResultsPage = () => {
                       
                       <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full bg-gradient-to-r ${topicColors[category]} transition-all duration-500`}
+                          className={`h-full bg-gradient-to-r ${topicColors[category] || 'from-blue-600 to-blue-700'} transition-all duration-500`}
                           style={{ width: `${percentage}%` }}
                         ></div>
                       </div>
@@ -374,7 +382,7 @@ const QuickMockResultsPage = () => {
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <div className={`w-6 h-6 bg-gradient-to-r ${topicColors[response.category]} rounded flex items-center justify-center`}>
+                        <div className={`w-6 h-6 bg-gradient-to-r ${topicColors[response.category] || 'from-blue-600 to-blue-700'} rounded flex items-center justify-center`}>
                           <Icon className="w-3 h-3 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700">
