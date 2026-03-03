@@ -17,6 +17,7 @@ const AdminQuickPracticeQuestionsPage = () => {
   const [saving, setSaving] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importFile, setImportFile] = useState(null);
+  const [importFailures, setImportFailures] = useState([]);
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
@@ -148,18 +149,19 @@ const AdminQuickPracticeQuestionsPage = () => {
     }
 
     setImporting(true);
+    setImportFailures([]);
     try {
       const res = await apiMethods.admin.quickPracticeQuestions.importFile(importFile);
       const data = res?.data?.data;
       const inserted = data?.inserted ?? 0;
       const failed = data?.failed ?? 0;
       if (inserted > 0) {
-        toast.success(`Imported ${inserted} questions${failed ? ` (${failed} rows failed — check console)` : ''}`);
+        toast.success(`Imported ${inserted} questions${failed ? ` (${failed} rows failed — see details below)` : ''}`);
       } else {
-        toast.error(`Import failed — 0 questions inserted. ${failed} rows had errors.`);
+        toast.error(`Import failed — 0 questions inserted. ${failed} rows had errors. See details below.`);
       }
       if (data?.failures?.length > 0) {
-        console.error('Import row failures:', JSON.stringify(data.failures, null, 2));
+        setImportFailures(data.failures);
       }
       setImportFile(null);
       if (inserted > 0) fetchItems();
@@ -167,7 +169,12 @@ const AdminQuickPracticeQuestionsPage = () => {
       const serverMsg = e?.response?.data?.message || '';
       const failures = e?.response?.data?.data?.failures || [];
       console.error('Import error:', serverMsg, failures);
-      toast.error(serverMsg || 'Import failed');
+      if (failures.length > 0) {
+        setImportFailures(failures);
+        toast.error(serverMsg || 'Import failed — see row errors below');
+      } else {
+        toast.error(serverMsg || 'Import failed');
+      }
     } finally {
       setImporting(false);
     }
@@ -215,6 +222,34 @@ const AdminQuickPracticeQuestionsPage = () => {
             {importing ? 'Importing…' : 'Import'}
           </button>
         </div>
+
+        {/* Failure details table — visible in UI so admin doesn't need to open DevTools */}
+        {importFailures.length > 0 && (
+          <div className="mt-4 border border-red-200 rounded-lg overflow-hidden">
+            <div className="bg-red-50 px-4 py-2 flex items-center justify-between">
+              <span className="text-sm font-semibold text-red-700">{importFailures.length} row{importFailures.length !== 1 ? 's' : ''} failed to import</span>
+              <button className="text-xs text-red-500 hover:underline" onClick={() => setImportFailures([])}>Dismiss</button>
+            </div>
+            <div className="overflow-x-auto max-h-60 overflow-y-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-red-100 sticky top-0">
+                  <tr>
+                    <th className="px-3 py-2 text-left text-red-800 font-semibold w-16">Row</th>
+                    <th className="px-3 py-2 text-left text-red-800 font-semibold">Error</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {importFailures.map((f, i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-red-50'}>
+                      <td className="px-3 py-1.5 text-secondary-600 align-top">{String(f.row)}</td>
+                      <td className="px-3 py-1.5 text-red-700 break-words">{f.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="card p-6 space-y-4">
