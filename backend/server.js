@@ -27,25 +27,21 @@ const interviewRoutes = require('./routes/interviews');
 const aiRoutes = require('./routes/ai');
 const progressRoutes = require('./routes/progress');
 const mcqRoutes = require('./routes/mcq');
+const chatRoutes = require('./routes/chat');
 
 const app = express();
 const server = http.createServer(app);
-const chatRoutes = require('./routes/chat');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const isAllowedOrigin = (origin) => {
-  // Allow requests with no origin (like mobile apps or curl requests)
-  if (!origin) return true;
-
-  // Explicitly allow configured / common dev origins
-  if (allowedOrigins.includes(origin)) return true;
-
-  // In development, allow localhost / 127.0.0.1 on any port
-  if (!isProduction && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) return true;
-
-  return false;
-};
+// Validate critical environment variables at startup
+const REQUIRED_ENV_VARS = ['JWT_SECRET'];
+const missingEnvVars = REQUIRED_ENV_VARS.filter((v) => !process.env[v]);
+if (missingEnvVars.length > 0) {
+  console.error(`❌ Missing required environment variables: ${missingEnvVars.join(', ')}`);
+  console.error('   Set these in your .env file or deployment environment.');
+  if (isProduction) process.exit(1);
+}
 
 // Define allowed origins for CORS
 // FRONTEND_URL may be a single URL or a comma-separated list of URLs
@@ -61,6 +57,19 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://127.0.0.1:3001'
 ];
+
+const isAllowedOrigin = (origin) => {
+  // Allow requests with no origin (like mobile apps or curl requests)
+  if (!origin) return true;
+
+  // Explicitly allow configured / common dev origins
+  if (allowedOrigins.includes(origin)) return true;
+
+  // In development, allow localhost / 127.0.0.1 on any port
+  if (!isProduction && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) return true;
+
+  return false;
+};
 
 const io = socketIo(server, {
   cors: {
@@ -271,10 +280,10 @@ const promoteAdminsFromEnv = async () => {
 const start = async () => {
   try {
     try {
+      // Note: useNewUrlParser and useUnifiedTopology were removed in Mongoose 7
+      // and should not be passed — they cause deprecation warnings.
       await mongoose.connect(MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: isProduction ? 15000 : 5000,  // Increased for Render cold start
+        serverSelectionTimeoutMS: isProduction ? 15000 : 5000,
         socketTimeoutMS: isProduction ? 45000 : 10000,
         retryWrites: true,
         maxPoolSize: isProduction ? 10 : 5,
@@ -289,8 +298,6 @@ const start = async () => {
         mongoMemoryServer = await MongoMemoryServer.create();
         const memoryUri = mongoMemoryServer.getUri();
         await mongoose.connect(memoryUri, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
           serverSelectionTimeoutMS: 5000,
         });
         console.log('In-memory MongoDB started successfully');

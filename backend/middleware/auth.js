@@ -33,40 +33,35 @@ const authenticateToken = async (req, res, next) => {
     const todayKey = toUtcDayKey(new Date());
     const lastActiveKey = toUtcDayKey(user?.stats?.lastActiveDate);
 
-    // ...existing code...
-
     // Check if we need to update streak:
     // 1. Different day from lastActiveDate, OR
     // 2. Same day but we haven't confirmed today's login in Progress yet
     let needsUpdate = todayKey && lastActiveKey !== todayKey;
-    
+
     if (!needsUpdate && todayKey === lastActiveKey) {
-      // Same day - but verify we actually have today's login recorded in Progress
+      // Same day — verify today's login is actually recorded in Progress
       const progress = await Progress.findOne({ userId: user._id });
       if (progress) {
         const todayRecord = progress.dailyActivity.find(a => toUtcDayKey(a?.date) === todayKey);
         const hasLoginToday = todayRecord && (todayRecord.logins || 0) > 0;
         if (!hasLoginToday) {
-          // ...existing code...
           needsUpdate = true;
         }
       }
     }
 
     if (needsUpdate) {
-      // ...existing code...
       try {
         await markLoginActivityAndStreak(user._id);
         // Reload user so req.user has fresh stats.streakDays + lastActiveDate
         const freshUser = await User.findById(user._id).select('-password');
-        // ...existing code...
         req.user = freshUser || user;
       } catch (e) {
         console.error('Failed to update login streak activity:', e);
         req.user = user;
       }
     } else {
-      // ...existing code...
+      // Fire-and-forget: keep lastActiveDate current without blocking the request
       User.updateOne(
         { _id: user._id },
         { $set: { 'stats.lastActiveDate': new Date() } }
