@@ -117,8 +117,13 @@ router.post(
       const categories = Array.isArray(req.body.categories) && req.body.categories.length
         ? req.body.categories
         : ['dsa', 'oop', 'dbms', 'os', 'networks'];
+      const difficulty = ['easy', 'medium', 'hard'].includes(req.body.difficulty)
+        ? req.body.difficulty
+        : null;
 
       const match = { category: { $in: categories } };
+      if (difficulty) match.difficulty = difficulty;
+
       const sampled = await QuickPracticeQuestion.aggregate([
         { $match: match },
         { $sample: { size: count } }
@@ -127,7 +132,7 @@ router.post(
       if (!sampled || sampled.length < count) {
         return res.status(400).json({
           success: false,
-          message: `Not enough questions in bank for the selected categories. Found ${sampled?.length || 0}, need ${count}.`
+          message: `Not enough ${difficulty ? difficulty + ' ' : ''}questions in bank for the selected categories. Found ${sampled?.length || 0}, need ${count}.`
         });
       }
 
