@@ -98,9 +98,22 @@ const QuickMockSetupPage = () => {
       return;
     }
 
-    if (totalAvailableQuestions < numberOfQuestions) {
+    let activeDifficulty = difficulty;
+
+    // If the selected difficulty has no questions, fall back to mixed
+    if (totalAvailableQuestions === 0 && difficulty !== 'mixed') {
+      toast('No ' + difficulty + ' questions available for the selected topics. Using mixed difficulty instead.', { icon: '⚠️' });
+      activeDifficulty = 'mixed';
+    }
+
+    // Recalculate available count based on effective difficulty
+    const effectiveCount = activeDifficulty === 'mixed'
+      ? topics.filter(t => selectedTopics.includes(t.name)).reduce((s, t) => s + t.total, 0)
+      : totalAvailableQuestions;
+
+    if (effectiveCount < numberOfQuestions) {
       toast.error(
-        `Only ${totalAvailableQuestions} question${totalAvailableQuestions !== 1 ? 's' : ''} available for the selected topic${selectedTopics.length !== 1 ? 's' : ''}. Please reduce the question count or select more topics.`
+        `Only ${effectiveCount} question${effectiveCount !== 1 ? 's' : ''} available for the selected topic${selectedTopics.length !== 1 ? 's' : ''}. Please reduce the question count or select more topics.`
       );
       return;
     }
@@ -110,7 +123,8 @@ const QuickMockSetupPage = () => {
       const response = await apiMethods.quickPractice.start({
         count: numberOfQuestions,
         categories: selectedTopics,
-        timePerQuestion: timeLimit
+        timePerQuestion: timeLimit,
+        ...(activeDifficulty !== 'mixed' && { difficulty: activeDifficulty })
       });
 
       if (response.data?.success) {
@@ -128,18 +142,41 @@ const QuickMockSetupPage = () => {
   const totalAvailableQuestions = useMemo(() => {
     return topics
       .filter(t => selectedTopics.includes(t.name))
+      .reduce((sum, t) => {
+        if (difficulty === 'mixed') return sum + t.total;
+        return sum + (t.breakdown?.[difficulty] || 0);
+      }, 0);
+  }, [topics, selectedTopics, difficulty]);
+
+  // When the chosen difficulty has 0 questions we fall back to mixed at start time;
+  // use total count so buttons/slider still reflect usable capacity.
+  const totalAllQuestions = useMemo(() => {
+    return topics
+      .filter(t => selectedTopics.includes(t.name))
       .reduce((sum, t) => sum + t.total, 0);
   }, [topics, selectedTopics]);
+
+  const willFallbackToMixed = useMemo(
+    () => totalAvailableQuestions === 0 && difficulty !== 'mixed' && selectedTopics.length > 0,
+    [totalAvailableQuestions, difficulty, selectedTopics]
+  );
+
+  const effectiveAvailable = useMemo(
+    () => (willFallbackToMixed ? totalAllQuestions : totalAvailableQuestions),
+    [willFallbackToMixed, totalAllQuestions, totalAvailableQuestions]
+  );
 
   const estimatedTime = useMemo(() => {
     return Math.ceil((numberOfQuestions * timeLimit) / 60);
   }, [numberOfQuestions, timeLimit]);
 
   useEffect(() => {
-    if (selectedTopics.length > 0 && totalAvailableQuestions > 0 && numberOfQuestions > totalAvailableQuestions) {
-      setNumberOfQuestions(Math.max(5, totalAvailableQuestions));
+    if (selectedTopics.length > 0 && effectiveAvailable > 0 && numberOfQuestions > effectiveAvailable) {
+      const options = [10, 20, 30, 40, 50];
+      const largest = [...options].reverse().find(n => n <= effectiveAvailable) || options[0];
+      setNumberOfQuestions(largest);
     }
-  }, [totalAvailableQuestions]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [effectiveAvailable, difficulty]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loadingTopics) {
     return (
@@ -299,26 +336,35 @@ const QuickMockSetupPage = () => {
                   <label className="block text-sm font-semibold text-slate-700 mb-3">
                     Number of Questions: <span className="text-blue-600 font-bold">{numberOfQuestions}</span>
                   </label>
-                  {selectedTopics.length > 0 && totalAvailableQuestions < numberOfQuestions && (
-                    <p className="text-xs text-red-500 mb-2">
-                      Only {totalAvailableQuestions} questions available for selected topics.
+                  {willFallbackToMixed ? (
+                    <p className="text-xs text-amber-600 mb-2">
+                      No {difficulty} questions available — will use mixed difficulty ({totalAllQuestions} questions).
                     </p>
-                  )}
-                  <input
-                    type="range"
-                    min="5"
-                    max={selectedTopics.length > 0 ? Math.min(100, totalAvailableQuestions) : 100}
-                    step="1"
-                    value={numberOfQuestions}
-                    onChange={(e) => setNumberOfQuestions(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                  />
-                  <div className="flex justify-between text-xs text-slate-500 mt-1">
-                    <span>5</span>
-                    <span>25</span>
-                    <span>50</span>
-                    <span>75</span>
-                    <span>100</span>
+                  ) : selectedTopics.length > 0 && effectiveAvailable < numberOfQuestions ? (
+                    <p className="text-xs text-red-500 mb-2">
+                      Only {effectiveAvailable} questions available for selected topics.
+                    </p>
+                  ) : null}
+                  <div className="grid grid-cols-5 gap-2">
+                    {[10, 20, 30, 40, 50].map((n) => {
+                      const disabled = selectedTopics.length > 0 && effectiveAvailable < n;
+                      return (
+                        <button
+                          key={n}
+                          onClick={() => !disabled && setNumberOfQuestions(n)}
+                          disabled={disabled}
+                          className={`py-2 rounded-lg font-medium text-sm transition-all ${
+                            numberOfQuestions === n
+                              ? 'bg-blue-600 text-white shadow-sm'
+                              : disabled
+                              ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          {n}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
