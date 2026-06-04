@@ -652,6 +652,7 @@ const HomePage = () => {
               <h3 id="footer-quick-links" className="text-lg font-bold mb-4 text-white">Quick Links</h3>
               <ul className="space-y-2">
                 <li><Link to="/login" className="text-secondary-300 hover:text-primary-400 font-medium transition-colors">Sign In</Link></li>
+                <li><a href="https://careerprep.tech/about" target="_blank" rel="noopener noreferrer" className="text-secondary-300 hover:text-primary-400 font-medium transition-colors">About Us</a></li>
               </ul>
             </section>
 

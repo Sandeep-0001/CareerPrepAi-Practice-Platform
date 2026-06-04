@@ -103,7 +103,8 @@ const Sidebar = ({ isOpen, onClose }) => {
               { name: 'Code Analyser', href: 'https://codeanalyser.careerprep.tech', icon: BarChart2 },
               { name: 'Patterns (Similar Qs)', href: 'https://patterns.careerprep.tech', icon: ListChecks },
               { name: 'Company Sheets', href: 'https://interview.careerprep.tech', icon: Database },
-              { name: 'University Notes', href: 'https://notes.careerprep.tech', icon: GraduationCap }
+              { name: 'University Notes', href: 'https://notes.careerprep.tech', icon: GraduationCap },
+              { name: 'About Us', href: 'https://careerprep.tech/about', icon: GraduationCap }
             ].map((item, index) => (
               <li key={item.name}>
                 <a
